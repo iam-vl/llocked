@@ -6,12 +6,20 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/", HandleWelcome)
-	fmt.Println("starting the server on :3000...")
+	http.HandleFunc("/", HandleHome)
+	http.HandleFunc("/contacts", HandleContacts)
+	fmt.Println("starting the server on :1111...")
 	http.ListenAndServe(":1111", nil)
 
 }
 
-func HandleWelcome(w http.ResponseWriter, r *http.Request) {
+func HandleHome(w http.ResponseWriter, r *http.Request) {
+	// w.Header().Set("Content-Type", "text/plain")
+	w.Header().Set("Content-Type", "text/html, charset=utf-8")
 	fmt.Fprint(w, "<h1>Welcome to my awesome site</h1>")
+}
+
+func HandleContacts(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	fmt.Fprint(w, "<h1>Contact Page</h1><p>To get in touch, email me</p>")
 }
