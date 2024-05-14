@@ -84,3 +84,70 @@ func HandlePath(w http.ResponseWriter, r *http.Request) {
 Enter: `http://localhost:1111/log`
 Result: `/log`
 
+## Custom router 
+
+Version 1:
+```go
+func main() {
+	http.HandleFunc("/", HandlePath)
+	fmt.Println("starting the server on :1111...")
+	http.ListenAndServe(":1111", nil)
+}
+func HandlePath(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path == "/" {
+		HandleHome(w, r)
+	} else if r.URL.Path == "/contacts" {
+		HandleContacts(w, r)
+	} else {
+		fmt.Fprint(w, r.URL.Path)
+	}
+}
+```
+Version2 :
+```go
+func HandlePath(w http.ResponseWriter, r *http.Request) {
+	switch r.URL.Path {
+	case "/":
+		HandleHome(w, r)
+	case "/contacts":
+		HandleContacts(w, r)
+	default:
+		fmt.Fprint(w, r.URL.Path)
+	}
+}
+```
+
+## URL Path vs RawPath
+
+some difference
+
+```go
+type URL struct {
+	// 
+	Path        string    // path (relative paths may omit leading slash)
+	RawPath     string    // encoded path hint (see EscapedPath method)
+	// 
+}
+```
+
+## Not Found 
+
+In `net/http`: 
+```go
+const (
+    // ...
+    StatusNotFound = 404 // RFC 7231, 6.3.4
+    // ...
+)
+```
+In `http.ResponseWriter`:
+* If we call `Write()` w/out setting a status code, it uses 200 OK by default. 
+* For custom code, call `WriteHeader()` before calling `Write()`.
+
+```go
+    default:
+		content := fmt.Sprintf("<h1>Page not found</h1><p>Requested URL: %s</p>", r.URL.Path)
+		// fmt.Fprint(w, content)
+		http.Error(w, content, http.StatusNotFound)
+	}
+```

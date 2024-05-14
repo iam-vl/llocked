@@ -8,13 +8,22 @@ import (
 func main() {
 	// http.HandleFunc("/", HandleHome)
 	http.HandleFunc("/", HandlePath)
-	http.HandleFunc("/contacts", HandleContacts)
+	// http.HandleFunc("/contacts", HandleContacts)
 	fmt.Println("starting the server on :1111...")
 	http.ListenAndServe(":1111", nil)
 
 }
 func HandlePath(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, r.URL.Path)
+	switch r.URL.Path {
+	case "/":
+		HandleHome(w, r)
+	case "/contacts":
+		HandleContacts(w, r)
+	default:
+		content := fmt.Sprintf("<h1>Page not found</h1><p>Requested URL: %s</p>", r.URL.Path)
+		// fmt.Fprint(w, content)
+		http.Error(w, content, http.StatusNotFound)
+	}
 }
 
 func HandleHome(w http.ResponseWriter, r *http.Request) {
