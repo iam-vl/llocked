@@ -1,11 +1,22 @@
 # llocked
 
-Toolchain 
-```sh
-PS C:\Users\lava\Documents\Learn\go\llocked> go install .
-PS C:\Users\lava\Documents\Learn\go\llocked> llocked
-starting the server on :3000...
+## Libraries 
+
 ```
+go install github.com/cortesi/modd/cmd/modd@latest
+modd --version
+```
+
+
+## Toolchain 
+
+```sh
+$ go install .
+$ llocked
+starting the server on :3000...
+
+```
+
 
 ## Plan 
 

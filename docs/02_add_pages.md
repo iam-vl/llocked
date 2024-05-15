@@ -151,3 +151,45 @@ In `http.ResponseWriter`:
 		http.Error(w, content, http.StatusNotFound)
 	}
 ```
+
+## The http.Handler type
+
+Original definitions: 
+```go
+func HandleFunc(pattern string, handler func(ResponseWriter, *Request)) {
+	DefaultServeMux.HandleFunc(pattern, handler)
+}
+func ListenAndServe(addr string, handler Handler) error 
+```
+If we pass `nil` as a second arg to ListenAndServer, uses DefaultServeMux:
+```go
+http.ListenAndServe(":1111", HandlePath) => Error
+```
+
+```go
+type Handler interface {
+	ServeHTTP(ResponseWriter, *Request)
+}
+```
+
+Let's create a router:
+```go
+type Router struct{}
+
+func (router Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	switch r.URL.Path {
+	case "/":
+		HandleHome(w, r)
+	case "/contacts":
+		HandleContacts(w, r)
+	default:
+		content := fmt.Sprintf("<h1>Page not found</h1><p>Requested URL: %s</p>", r.URL.Path)
+		http.Error(w, content, http.StatusNotFound)
+	}
+}
+func main() {
+	var router Router
+	fmt.Println("Starting server on port :1111")
+	http.ListenAndServe(":1111", router)
+}
+```
