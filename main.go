@@ -3,45 +3,23 @@ package main
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/go-chi/chi/v5"
 )
 
-type Router struct{}
-
-func (router Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	switch r.URL.Path {
-	case "/":
-		HandleHome(w, r)
-	case "/contacts":
-		HandleContacts(w, r)
-	case "/faq":
-		HandleFAQ(w, r)
-	default:
-		content := fmt.Sprintf("<h1>Page not found</h1><p>Requested URL: %s</p>", r.URL.Path)
-		// fmt.Fprint(w, content)
-		http.Error(w, content, http.StatusNotFound)
-	}
-}
-
 func main() {
-	var router Router
-	// http.HandleFunc("/", HandleHome)
-	// http.HandleFunc("/contacts", HandleContacts)
+	r := chi.NewRouter()
+	r.Get("/", HandleHome)
+	r.Get("/contact", HandleContacts)
+	r.Get("/faq", HandleFAQ)
+	// Chi router provides NotFound()
+	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
+		content := fmt.Sprintf("<h1>Page not found</h1><p>Requested URL: %s</p>", r.URL.Path)
+		http.Error(w, content, http.StatusNotFound)
+	})
 	fmt.Println("Starting server on port :1111")
-	http.ListenAndServe(":1111", router)
+	http.ListenAndServe(":1111", r)
 }
-
-// func HandlePath(w http.ResponseWriter, r *http.Request) {
-// 	switch r.URL.Path {
-// 	case "/":
-// 		HandleHome(w, r)
-// 	case "/contacts":
-// 		HandleContacts(w, r)
-// 	default:
-// 		content := fmt.Sprintf("<h1>Page not found</h1><p>Requested URL: %s</p>", r.URL.Path)
-// 		// fmt.Fprint(w, content)
-// 		http.Error(w, content, http.StatusNotFound)
-// 	}
-// }
 
 func HandleHome(w http.ResponseWriter, r *http.Request) {
 	// w.Header().Set("Content-Type", "text/plain")
