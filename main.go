@@ -13,6 +13,8 @@ func (router Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		HandleHome(w, r)
 	case "/contacts":
 		HandleContacts(w, r)
+	case "/faq":
+		HandleFAQ(w, r)
 	default:
 		content := fmt.Sprintf("<h1>Page not found</h1><p>Requested URL: %s</p>", r.URL.Path)
 		// fmt.Fprint(w, content)
@@ -52,18 +54,19 @@ func HandleContacts(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "<h1>Contact Page</h1><p>To get in touch, email me: \"vl@vl.info\"</p>")
 }
 
-func (mux *Servemux) Handle(pattern string, handler Handler) {
-	mux.mu.Lock()
-	defer mux.mu.Unlock()
-	if pattern == "" {
-		panic("http: invalid pattern")
-	}
-	if handler == nil {
-		panic("http: nil handler")
-	}
-	_, exist := mux.m[pattern]
-	if exist {
-		panic("http: multiple registrations for " + pattern)
-	}
-	// ...
+func HandleFAQ(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	fmt.Fprint(w, `<h1>FAQ page</h1>
+	<ul>
+		<li>
+			<b>Is there a free version?</b> Yes, we offer 30 days...
+		</li>
+		<li>
+			<b>What are your support hours?</b> Lorem ipsum dolor sit amet.
+		</li>
+		<li>
+			<b>How do I contact support?</b> Lorem ipsum dolor sit amet.
+		</li>
+	</ul>
+	`)
 }
