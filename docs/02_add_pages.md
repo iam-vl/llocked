@@ -230,5 +230,26 @@ func main() {
 	http.ListenAndServe(":1111", router)
 }
 ```
+Iteration 2"
+```go
+func main() {
+	// var router http.HandlerFunc
+	// router = HandlePath
+	fmt.Println("Starting server on port :1111")
+	// http.ListenAndServe(":1111", router)
+	http.ListenAndServe(":1111", http.HandlerFunc(HandlePath)) // HandlerFunc as type conversion
+}
+```
+Example type conversions:
+```go
+float64(a)
+http.HandlerFunc(HandlePath) //
+```
+Takeaways:
+
+1. HandlerFunc type implements Handler interface
+2. We can convert handler functions into HandlerFunc.
+3. When a func is converted into HandlerFunc, it has ServeHTTP method that implements Handler interface.
+
 
 

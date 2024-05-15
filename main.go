@@ -21,10 +21,8 @@ func (router Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	var router http.HandlerFunc
-	router = HandlePath
 	fmt.Println("Starting server on port :1111")
-	http.ListenAndServe(":1111", router)
+	http.ListenAndServe(":1111", http.HandlerFunc(HandlePath))
 }
 
 func HandlePath(w http.ResponseWriter, r *http.Request) {
