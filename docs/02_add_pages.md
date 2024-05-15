@@ -257,7 +257,57 @@ Takeaways:
 
 `Handle` vs `HandleFunc`: 
 * `http.Handle()`: a function that accepts a pattern and an http.Handler as arguments
-* `http.HandleFunc()`: a function that accepts a pattern and an function that looks like a HandlerFunc in arguments. 
+* `http.HandleFunc()`: a function that accepts a pattern and a function that looks like a HandlerFunc in arguments. 
+
+HandleFunc source:
+
+```go
+func HandleFunc(pattern string, handler func(w, *r)) {
+	DefaultServeMux.HandleFunc(pattern, handler)
+}
+// ServeMux.HandleFunc source
+func (mux *ServeMux) HandleFunc(pattern string, handler func(Rw, *r)) {
+	if handler == nil {
+		panic("http: nil handler)
+	}
+	mux.Handle(pattern, HandlerFunc(handler))
+}
+// ...
+
+```
 
 
+## Handler pattern
 
+if there is an impl of `http.Handler` interface, use `Handle`:  
+```go
+var router Router
+http.Handle("/", router) 
+```
+If handlers:  
+```go
+http.HandleFunc("/", HandleHome)
+```  
+Mixed 1:  
+```go
+var router Router
+http.HandleFunc("/", router.ServeHTTP) 
+http.HandleFunc("/contacts", HandleContact)
+```  
+Mixed 2:  
+```go
+var router Router
+http.Handle("/", router) 
+http.Handle("/contacts", http.HandlerFunc(HandleContact))
+```
+
+Main res:
+```go
+func main() {
+	var router Router
+	// http.HandleFunc("/", HandleHome)
+	// http.HandleFunc("/contacts", HandleContacts)
+	fmt.Println("Starting server on port :1111")
+	http.ListenAndServe(":1111", router)
+}
+```

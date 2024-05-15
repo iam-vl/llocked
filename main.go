@@ -21,22 +21,25 @@ func (router Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	var router Router
+	// http.HandleFunc("/", HandleHome)
+	// http.HandleFunc("/contacts", HandleContacts)
 	fmt.Println("Starting server on port :1111")
-	http.ListenAndServe(":1111", http.HandlerFunc(HandlePath))
+	http.ListenAndServe(":1111", router)
 }
 
-func HandlePath(w http.ResponseWriter, r *http.Request) {
-	switch r.URL.Path {
-	case "/":
-		HandleHome(w, r)
-	case "/contacts":
-		HandleContacts(w, r)
-	default:
-		content := fmt.Sprintf("<h1>Page not found</h1><p>Requested URL: %s</p>", r.URL.Path)
-		// fmt.Fprint(w, content)
-		http.Error(w, content, http.StatusNotFound)
-	}
-}
+// func HandlePath(w http.ResponseWriter, r *http.Request) {
+// 	switch r.URL.Path {
+// 	case "/":
+// 		HandleHome(w, r)
+// 	case "/contacts":
+// 		HandleContacts(w, r)
+// 	default:
+// 		content := fmt.Sprintf("<h1>Page not found</h1><p>Requested URL: %s</p>", r.URL.Path)
+// 		// fmt.Fprint(w, content)
+// 		http.Error(w, content, http.StatusNotFound)
+// 	}
+// }
 
 func HandleHome(w http.ResponseWriter, r *http.Request) {
 	// w.Header().Set("Content-Type", "text/plain")
@@ -47,4 +50,20 @@ func HandleHome(w http.ResponseWriter, r *http.Request) {
 func HandleContacts(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	fmt.Fprint(w, "<h1>Contact Page</h1><p>To get in touch, email me: \"vl@vl.info\"</p>")
+}
+
+func (mux *Servemux) Handle(pattern string, handler Handler) {
+	mux.mu.Lock()
+	defer mux.mu.Unlock()
+	if pattern == "" {
+		panic("http: invalid pattern")
+	}
+	if handler == nil {
+		panic("http: nil handler")
+	}
+	_, exist := mux.m[pattern]
+	if exist {
+		panic("http: multiple registrations for " + pattern)
+	}
+	// ...
 }
