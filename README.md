@@ -14,9 +14,11 @@ modd --version
 $ go install .
 $ llocked
 starting the server on :3000...
-
 ```
 
+```
+go get -u guthub.com/go-chi/chi/v5
+```
 
 ## Plan 
 
