@@ -193,3 +193,14 @@ func main() {
 	http.ListenAndServe(":1111", router)
 }
 ```
+
+Example of a fake server with db conn string: 
+```go
+type Server struct {
+	DB string
+}
+func (s Server) ServeHTTP(w, r) {
+	fmt.Fprint(w, "content")
+}
+```
+Now we can spin up multiple servers.  
