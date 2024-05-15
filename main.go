@@ -21,16 +21,10 @@ func (router Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	var router Router
+	var router http.HandlerFunc
+	router = HandlePath
 	fmt.Println("Starting server on port :1111")
 	http.ListenAndServe(":1111", router)
-	// // http.HandleFunc("/", HandleHome)
-	// http.HandleFunc("/", HandlePath)
-	// // http.HandleFunc("/contacts", HandleContacts)
-	// fmt.Println("starting the server on :1111...")
-	// // port, http.Handler
-	// // HandlePath() doesn't implement http.Handler
-	// http.ListenAndServe(":1111", nil)
 }
 
 func HandlePath(w http.ResponseWriter, r *http.Request) {

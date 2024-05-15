@@ -191,6 +191,9 @@ func main() {
 	var router Router
 	fmt.Println("Starting server on port :1111")
 	http.ListenAndServe(":1111", router)
+	// http.HandleFunc("/", HandlePath)
+	// fmt.Println("starting the server on :1111...")
+	// http.ListenAndServe(":1111", nil)
 }
 ```
 
@@ -203,4 +206,29 @@ func (s Server) ServeHTTP(w, r) {
 	fmt.Fprint(w, "content")
 }
 ```
-Now we can spin up multiple servers.  
+Now we can spin up multiple servers.
+
+## The http.HandlerFunc type
+
+Def:
+```go
+type HandlerFunc func(ResponseWriter, *Request)
+```
+But it can:
+```go
+func (f HandlerFunc) ServeHTTP(w ResponseWriter, r *Request) {
+	f(w, r)
+}
+```
+
+```go
+func main() {
+	var router http.HandlerFunc
+	router = HandlePath 
+	// var router Router
+	fmt.Println("Starting server on port :1111")
+	http.ListenAndServe(":1111", router)
+}
+```
+
+
