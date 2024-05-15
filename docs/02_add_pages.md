@@ -247,9 +247,17 @@ http.HandlerFunc(HandlePath) //
 ```
 Takeaways:
 
-1. HandlerFunc type implements Handler interface
-2. We can convert handler functions into HandlerFunc.
-3. When a func is converted into HandlerFunc, it has ServeHTTP method that implements Handler interface.
+1. `HandlerFunc` type implements `Handler` interface
+2. We can convert handler functions into `HandlerFunc`.
+3. When a func is converted into `HandlerFunc`, it has `ServeHTTP` method that implements `Handler` interface.
+
+`Handler` vs `HandlerFunc`: 
+* `http.Handler`: a interface with `ServeHTTP()` method
+* `http.HandlerFunc`: a function that accepts the same args as `ServeHTTP()`.
+
+`Handle` vs `HandleFunc`: 
+* `http.Handle()`: a function that accepts a pattern and an http.Handler as arguments
+* `http.HandleFunc()`: a function that accepts a pattern and an function that looks like a HandlerFunc in arguments. 
 
 
 
