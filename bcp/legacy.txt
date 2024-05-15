@@ -1,0 +1,16 @@
+type Router struct{}
+
+func (router Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	switch r.URL.Path {
+	case "/":
+		HandleHome(w, r)
+	case "/contacts":
+		HandleContacts(w, r)
+	case "/faq":
+		HandleFAQ(w, r)
+	default:
+		content := fmt.Sprintf("<h1>Page not found</h1><p>Requested URL: %s</p>", r.URL.Path)
+		// fmt.Fprint(w, content)
+		http.Error(w, content, http.StatusNotFound)
+	}
+}
