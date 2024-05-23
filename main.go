@@ -5,13 +5,16 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 func main() {
 	r := chi.NewRouter()
+	r.Use(middleware.Logger)
 	r.Get("/", HandleHome)
 	r.Get("/contact", HandleContacts)
 	r.Get("/faq", HandleFAQ)
+	r.Get("/galleries/{id}", HandleGallery)
 	// Chi router provides NotFound()
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		content := fmt.Sprintf("<h1>Page not found</h1><p>Requested URL: %s</p>", r.URL.Path)
@@ -47,4 +50,18 @@ func HandleFAQ(w http.ResponseWriter, r *http.Request) {
 		</li>
 	</ul>
 	`)
+}
+
+func HandleGallery(w http.ResponseWriter, r *http.Request) {
+	// fetch the url parameter `"ID"` from the request of a matching
+	// routing pattern. An example routing pattern could be: /galleries/{id}
+	id := chi.URLParam(r, "id")
+
+	// fetch `"key"` from the request context
+	// ctx := r.Context()
+	// key := ctx.Value("key").(string)
+
+	// respond to the client
+	html := fmt.Sprintf("<h1>Gallery %s</h1>", id)
+	w.Write([]byte(html))
 }

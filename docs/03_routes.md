@@ -39,3 +39,34 @@ func main() {
 	http.ListenAndServe(":1111", r)
 }
 ```
+
+## Exercise
+
+Get a parameter from the URL:
+```go
+r.Get("/galleries/{id}", HandleGallery)
+```
+Get the parameter from the request: 
+```go 
+func HandleGallery(w http.ResponseWriter, r *http.Request) {
+	// fetch the url parameter `"ID"` from the URL. Pattern: /galleries/{id}
+	id := chi.URLParam(r, "id")
+
+	// fetch `"key"` from the request context
+	// ctx := r.Context()
+	// key := ctx.Value("key").(string)
+
+	html := fmt.Sprintf("<h1>Gallery %s</h1>", id)
+	w.Write([]byte(html))
+}
+```
+Add logger: 
+```go 
+func main() {
+	r := chi.NewRouter()
+	r.Use(middleware.Logger)
+	r.Get("/", HandleHome)
+	// ...
+	http.ListenAndServe(":1111", r)
+}
+```
