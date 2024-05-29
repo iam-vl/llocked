@@ -193,6 +193,55 @@ Update:
 	}
 ```
 
+## Contacts / home / FAQ via template
+
+V1:
+```go
+func HandleHome(w http.ResponseWriter, r *http.Request) {
+	// w.Header().Set("Content-Type", "text/html, charset=utf-8")
+	tplPath := filepath.Join("templates", "home.gohtml")
+	// tpl, err := template.ParseFiles("templates/home.gohtml")
+	tpl, err := template.ParseFiles(tplPath)
+	if err != nil {
+		// panic(err)
+		log.Printf("parsing template: %v", err)
+		http.Error(w, "Error parsing template.", http.StatusInternalServerError)
+		return
+	}
+	err = tpl.Execute(w, "a string")
+	if err != nil {
+		// panic(err)
+		log.Printf("executing template: %v", err)
+		http.Error(w, "Error executing template.", http.StatusInternalServerError)
+		return
+	}
+}
+```
+
+Executing template as separate func:
+```go
+func ExecuteTemplate(w http.ResponseWriter, filepath string) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	tpl, err := template.ParseFiles(filepath)
+	if err != nil {
+		log.Printf("parsing template: %v", err)
+		http.Error(w, "Error parsing the template", http.StatusInternalServerError)
+		return
+	}
+	err = tpl.Execute(w, nil)
+	if err != nil {
+		log.Printf("executing template: %v", err)
+		http.Error(w, "Error executing the template", http.StatusInternalServerError)
+		return
+	}
+}
+
+func HandleHome(w http.ResponseWriter, r *http.Request) {
+	tplPath := filepath.Join("templates", "home.gohtml")
+	ExecuteTemplate(w, tplPath)
+}
+```
+
 
 
 

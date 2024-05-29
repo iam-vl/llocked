@@ -28,45 +28,19 @@ func main() {
 }
 
 func HandleHome(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html, charset=utf-8")
+	// w.Header().Set("Content-Type", "text/html, charset=utf-8")
 	tplPath := filepath.Join("templates", "home.gohtml")
-	// tpl, err := template.ParseFiles("templates/home.gohtml")
-	tpl, err := template.ParseFiles(tplPath)
-	if err != nil {
-		// panic(err)
-		log.Printf("parsing template: %v", err)
-		http.Error(w, "Error parsing template.", http.StatusInternalServerError)
-		return
-	}
-	err = tpl.Execute(w, "a string")
-	if err != nil {
-		// panic(err)
-		log.Printf("executing template: %v", err)
-		http.Error(w, "Error executing template.", http.StatusInternalServerError)
-		return
-	}
+	ExecuteTemplate(w, tplPath)
 }
 
 func HandleContacts(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	fmt.Fprint(w, "<h1>Contact Page</h1><p>To get in touch, email me: \"vl@vl.info\"</p>")
+	tplPath := filepath.Join("templates", "contact.gohtml")
+	ExecuteTemplate(w, tplPath)
 }
 
 func HandleFAQ(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	fmt.Fprint(w, `<h1>FAQ page</h1>
-	<ul>
-		<li>
-			<b>Is there a free version?</b> Yes, we offer 30 days...
-		</li>
-		<li>
-			<b>What are your support hours?</b> Lorem ipsum dolor sit amet.
-		</li>
-		<li>
-			<b>How do I contact support?</b> Lorem ipsum dolor sit amet.
-		</li>
-	</ul>
-	`)
+	tplPath := filepath.Join("templates", "faq.gohtml")
+	ExecuteTemplate(w, tplPath)
 }
 
 func HandleGallery(w http.ResponseWriter, r *http.Request) {
@@ -81,4 +55,21 @@ func HandleGallery(w http.ResponseWriter, r *http.Request) {
 	// respond to the client
 	html := fmt.Sprintf("<h1>Gallery %s</h1>", id)
 	w.Write([]byte(html))
+}
+
+func ExecuteTemplate(w http.ResponseWriter, filepath string) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+
+	tpl, err := template.ParseFiles(filepath)
+	if err != nil {
+		log.Printf("parsing template: %v", err)
+		http.Error(w, "Error parsing the template", http.StatusInternalServerError)
+		return
+	}
+	err = tpl.Execute(w, nil)
+	if err != nil {
+		log.Printf("executing template: %v", err)
+		http.Error(w, "Error executing the template", http.StatusInternalServerError)
+		return
+	}
 }
