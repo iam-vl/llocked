@@ -1,11 +1,8 @@
-package main
+# Starting to apply MVC
 
-import (
-	"errors"
-	"fmt"
-	"log"
-)
+## Errorf
 
+```go
 func Connect() error {
 	// deliberate error connecting smth
 	return errors.New("connection failed")
@@ -25,7 +22,6 @@ func CreateOrg() error {
 	}
 	return nil
 }
-
 func main() {
 	err := CreateUser()
 	if err != nil {
@@ -36,3 +32,9 @@ func main() {
 		log.Println(err)
 	}
 }
+```
+Result:
+```
+2024/05/30 14:35:00 create user: connection failed
+2024/05/30 14:35:00 create org: create user: connection failed
+```
