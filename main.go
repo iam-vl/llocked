@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/iam-vl/llocked/controllers"
 	"github.com/iam-vl/llocked/views"
 )
 
@@ -25,6 +26,16 @@ func main() {
 	})
 	fmt.Println("Starting server on port :1111")
 	http.ListenAndServe(":1111", r)
+}
+
+func ServeTemplateGet(r *http.Request, filename string, path string) {
+	tpl, err := views.Parse(filepath.Join("templates", filename))
+	if err != nil {
+		panic(err)
+	}
+	tplThing := controllers.Static{Template: tpl}
+	r.Method(http.MethodGet, path, tplThing)
+
 }
 
 func HandleHome(w http.ResponseWriter, r *http.Request) {
