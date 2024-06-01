@@ -16,12 +16,23 @@ import (
 // 	homeTemplate views.Template
 // )
 
+func ServeStaticThruType(r chi.Router, path string, templateName string) {
+	tpl, err := views.Parse(filepath.Join("templates", templateName))
+	if err != nil {
+		panic(err)
+	}
+	r.Method(http.MethodGet, path, controllers.Static{
+		Template: tpl,
+	})
+}
+
 func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
-	ServeStaticGet(r, "/", "home.gohtml")
-	ServeStaticGet(r, "/contact", "contact.gohtml")
-	ServeStaticGet(r, "/faq", "faq.gohtml")
+	// Custom type way
+	ServeStaticPage(r, "/", "home.gohtml")
+	ServeStaticPage(r, "/contact", "contact.gohtml")
+	ServeStaticPage(r, "/faq", "faq.gohtml")
 	// r.Get("/", HandleHome)
 	// r.Get("/contact", HandleContacts)
 	// r.Get("/faq", HandleFAQ)
@@ -35,12 +46,16 @@ func main() {
 	http.ListenAndServe(":1111", r)
 }
 
-func ServeStaticGet(r chi.Router, path string, templateName string) {
+func ServeStaticPage(r chi.Router, path string, templateName string) {
 	tpl, err := views.Parse(filepath.Join("templates", templateName))
 	if err != nil {
 		panic(err)
 	}
-	r.Get(path, controllers.HandleStatic(tpl))
+	r.Method(http.MethodGet, path, controllers.Static{
+		Template: tpl,
+	})
+	// Closure way
+	// r.Get(path, controllers.HandleStatic(tpl))
 }
 
 // func ServeTemplateGet(r *http.Request, filename string, path string) {

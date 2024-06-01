@@ -80,14 +80,16 @@ func HandleStatic(tpl views.Template) http.HandlerFunc {
 	}
 }
 ```
-Closure approach (main.go - can remove static handlers):  
+Main:  
 ```go
-func ServeStaticGet(r chi.Router, path string, templateName string) {
+func ServeStaticPage(r chi.Router, path string, templateName string) {
 	tpl, err := views.Parse(filepath.Join("templates", templateName))
 	if err != nil {
 		panic(err)
 	}
-	r.Get(path, controllers.HandleStatic(tpl))
+	r.Method(http.MethodGet, path, controllers.Static{ Template: tpl })
+	// Closure approach
+	// r.Get(path, controllers.HandleStatic(tpl))
 }
 func main() {
 	r := chi.NewRouter()
@@ -95,9 +97,6 @@ func main() {
 	ServeStaticGet(r, "/", "home.gohtml")
 	ServeStaticGet(r, "/contact", "contact.gohtml")
 	ServeStaticGet(r, "/faq", "faq.gohtml")
-	// r.Get("/", HandleHome)
-	// r.Get("/contact", HandleContacts)
-	// r.Get("/faq", HandleFAQ)
 	r.Get("/galleries/{id}", HandleGallery)
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		content := fmt.Sprintf("<h1>Page not found</h1><p>Requested URL: %s</p>", r.URL.Path)
@@ -105,3 +104,5 @@ func main() {
 	})
 	http.ListenAndServe(":1111", r)
 }
+```
+Static handlers (HandleHome, HandleContact, HandleFAQ) no longer needed.
