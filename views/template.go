@@ -12,7 +12,7 @@ type Template struct {
 }
 
 func (t Template) Execute(w http.ResponseWriter, data interface{}) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.Header().Set("Csontent-Type", "text/html; charset=utf-8")
 	err := t.htmlTemplate.Execute(w, data)
 	if err != nil {
 		log.Printf("executing template: %v", err)

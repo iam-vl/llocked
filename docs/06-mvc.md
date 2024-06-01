@@ -71,6 +71,37 @@ func (s Static) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.Template.Execute(w, nil)
 }
 ```
-Main updates:
+Closure approach (controllers/static.go): 
 ```go
-TBD
+// Closure approach
+func HandleStatic(tpl views.Template) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		tpl.Execute(w, nil)
+	}
+}
+```
+Closure approach (main.go - can remove static handlers):  
+```go
+func ServeStaticGet(r chi.Router, path string, templateName string) {
+	tpl, err := views.Parse(filepath.Join("templates", templateName))
+	if err != nil {
+		panic(err)
+	}
+	r.Get(path, controllers.HandleStatic(tpl))
+}
+func main() {
+	r := chi.NewRouter()
+	r.Use(middleware.Logger)
+	ServeStaticGet(r, "/", "home.gohtml")
+	ServeStaticGet(r, "/contact", "contact.gohtml")
+	ServeStaticGet(r, "/faq", "faq.gohtml")
+	// r.Get("/", HandleHome)
+	// r.Get("/contact", HandleContacts)
+	// r.Get("/faq", HandleFAQ)
+	r.Get("/galleries/{id}", HandleGallery)
+	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
+		content := fmt.Sprintf("<h1>Page not found</h1><p>Requested URL: %s</p>", r.URL.Path)
+		http.Error(w, content, http.StatusNotFound)
+	})
+	http.ListenAndServe(":1111", r)
+}

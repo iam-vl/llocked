@@ -12,12 +12,19 @@ import (
 	"github.com/iam-vl/llocked/views"
 )
 
+// var (
+// 	homeTemplate views.Template
+// )
+
 func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
-	r.Get("/", HandleHome)
-	r.Get("/contact", HandleContacts)
-	r.Get("/faq", HandleFAQ)
+	ServeStaticGet(r, "/", "home.gohtml")
+	ServeStaticGet(r, "/contact", "contact.gohtml")
+	ServeStaticGet(r, "/faq", "faq.gohtml")
+	// r.Get("/", HandleHome)
+	// r.Get("/contact", HandleContacts)
+	// r.Get("/faq", HandleFAQ)
 	r.Get("/galleries/{id}", HandleGallery)
 	// Chi router provides NotFound()
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
@@ -28,31 +35,38 @@ func main() {
 	http.ListenAndServe(":1111", r)
 }
 
-func ServeTemplateGet(r *http.Request, filename string, path string) {
-	tpl, err := views.Parse(filepath.Join("templates", filename))
+func ServeStaticGet(r chi.Router, path string, templateName string) {
+	tpl, err := views.Parse(filepath.Join("templates", templateName))
 	if err != nil {
 		panic(err)
 	}
-	tplThing := controllers.Static{Template: tpl}
-	r.Method(http.MethodGet, path, tplThing)
-
+	r.Get(path, controllers.HandleStatic(tpl))
 }
 
-func HandleHome(w http.ResponseWriter, r *http.Request) {
-	// w.Header().Set("Content-Type", "text/html, charset=utf-8")
-	tplPath := filepath.Join("templates", "home.gohtml")
-	ExecuteTemplate(w, tplPath)
-}
+// func ServeTemplateGet(r *http.Request, filename string, path string) {
+// 	tpl, err := views.Parse(filepath.Join("templates", filename))
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	tplThing := controllers.Static{Template: tpl}
+// 	r.Method(http.MethodGet, path, tplThing)
+// }
 
-func HandleContacts(w http.ResponseWriter, r *http.Request) {
-	tplPath := filepath.Join("templates", "contact.gohtml")
-	ExecuteTemplate(w, tplPath)
-}
+// func HandleHome(w http.ResponseWriter, r *http.Request) {
+// 	// w.Header().Set("Content-Type", "text/html, charset=utf-8")
+// 	tplPath := filepath.Join("templates", "home.gohtml")
+// 	ExecuteTemplate(w, tplPath)
+// }
 
-func HandleFAQ(w http.ResponseWriter, r *http.Request) {
-	tplPath := filepath.Join("templates", "faq.gohtml")
-	ExecuteTemplate(w, tplPath)
-}
+// func HandleContacts(w http.ResponseWriter, r *http.Request) {
+// 	tplPath := filepath.Join("templates", "contact.gohtml")
+// 	ExecuteTemplate(w, tplPath)
+// }
+
+// func HandleFAQ(w http.ResponseWriter, r *http.Request) {
+// 	tplPath := filepath.Join("templates", "faq.gohtml")
+// 	ExecuteTemplate(w, tplPath)
+// }
 
 func HandleGallery(w http.ResponseWriter, r *http.Request) {
 	// fetch the url parameter `"ID"` from the request of a matching
