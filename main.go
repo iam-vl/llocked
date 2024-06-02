@@ -33,6 +33,7 @@ func main() {
 	ServeStaticPage(r, "/", "home.gohtml")
 	ServeStaticPage(r, "/contact", "contact.gohtml")
 	ServeStaticPage(r, "/faq", "faq.gohtml")
+	ServeStaticPage(r, "/example", "example.gohtml")
 	// r.Get("/", HandleHome)
 	// r.Get("/contact", HandleContacts)
 	// r.Get("/faq", HandleFAQ)
