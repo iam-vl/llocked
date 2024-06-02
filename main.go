@@ -47,13 +47,15 @@ func main() {
 }
 
 func ServeStaticPage(r chi.Router, path string, templateName string) {
-	tpl, err := views.Parse(filepath.Join("templates", templateName))
-	if err != nil {
-		panic(err)
-	}
-	r.Method(http.MethodGet, path, controllers.Static{
-		Template: tpl,
-	})
+	tpl := views.Must(views.Parse(filepath.Join("templates", templateName)))
+	r.Get(path, controllers.HandleStatic(tpl))
+	// tpl, err := views.Parse(filepath.Join("templates", templateName))
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// r.Method(http.MethodGet, path, controllers.Static{
+	// 	Template: tpl,
+	// })
 	// Closure way
 	// r.Get(path, controllers.HandleStatic(tpl))
 }

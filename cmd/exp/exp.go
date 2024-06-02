@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"log"
 )
 
 func Connect() error {
@@ -27,12 +26,18 @@ func CreateOrg() error {
 }
 
 func main() {
-	err := CreateUser()
-	if err != nil {
-		log.Println(err)
-	}
-	err = CreateOrg()
-	if err != nil {
-		log.Println(err)
-	}
+	fmt.Println(1)
+	Connect()
+	// err := Connect()
+	// if err != nil {
+	// 	fmt.Println(err)
+	// }
+	// err := CreateUser()
+	// if err != nil {
+	// 	log.Println(err)
+	// }
+	// err = CreateOrg()
+	// if err != nil {
+	// 	log.Println(err)
+	// }
 }
