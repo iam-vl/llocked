@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"log"
 )
 
 func Connect() error {
@@ -25,19 +26,63 @@ func CreateOrg() error {
 	return nil
 }
 
+// func B() error {
+// 	err := A()
+// 	if err != nil {
+// 		return fmt.Errorf("b: %w", err)
+// 	}
+// 	return nil
+// }
+
+var ErrNotFound = errors.New("not found")
+
+func RetError() error {
+	return ErrNotFound
+}
+func A() error {
+	err := RetError()
+	if err != nil {
+		return fmt.Errorf("a: %w", err)
+	}
+	return nil
+}
+func B() error {
+	err := A()
+	if err != nil {
+		return fmt.Errorf("b: %w", err)
+	}
+	return nil
+}
 func main() {
-	fmt.Println(1)
-	Connect()
-	// err := Connect()
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
 	// err := CreateUser()
-	// if err != nil {
-	// 	log.Println(err)
-	// }
-	// err = CreateOrg()
-	// if err != nil {
-	// 	log.Println(err)
-	// }
+	// Define if the err == ErrNotFound
+	// var ErrNotFound := errors.New("not found")
+
+	// fmt.Println(1)
+	// Connect()
+	err := Connect()
+	if err != nil {
+		fmt.Println(err)
+	}
+	err = CreateUser()
+	if err != nil {
+		log.Println(err)
+	}
+	err = CreateOrg()
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println("=================")
+	err = RetError()
+	if err != nil {
+		fmt.Println(err)
+	}
+	err = A()
+	if err != nil {
+		fmt.Println(err)
+	}
+	err = B()
+	if err != nil {
+		fmt.Println(err)
+	}
 }
