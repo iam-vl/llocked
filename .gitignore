@@ -20,3 +20,6 @@ llocked
 
 # Go workspace file
 go.work
+
+# App binary
+app-bin

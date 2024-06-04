@@ -54,6 +54,7 @@ func B() error {
 	return nil
 }
 func main() {
+	// sample line
 	// err := CreateUser()
 	// Define if the err == ErrNotFound
 	// var ErrNotFound := errors.New("not found")

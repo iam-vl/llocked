@@ -9,6 +9,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/iam-vl/llocked/controllers"
+	"github.com/iam-vl/llocked/templates"
 	"github.com/iam-vl/llocked/views"
 )
 
@@ -48,7 +49,8 @@ func main() {
 }
 
 func ServeStaticPage(r chi.Router, path string, templateName string) {
-	tpl := views.Must(views.Parse(filepath.Join("templates", templateName)))
+	tpl := views.Must(views.ParseFS(templates.FS, templateName))
+	// tpl := views.Must(views.Parse(filepath.Join("templates", templateName)))
 	r.Get(path, controllers.HandleStatic(tpl))
 	// tpl, err := views.Parse(filepath.Join("templates", templateName))
 	// if err != nil {

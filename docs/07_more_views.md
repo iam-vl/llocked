@@ -29,9 +29,9 @@ Challenge: **Build the templates into the binary**.
 * Could use `embed` package. 
 
 ```
-touch temnplates/fs.go
+touch templates/fs.go
 ```
-gs.go:  
+fs.go:  
 
 ```go
 package templates
