@@ -88,7 +88,59 @@ func ParseFS(fs fs.FS, patterns ...string) (*Template, error) { }
 ```
 In exp.go:  
 ```go
-
+func main() {
+	Demo()
+	Demo(1)
+	Demo(1, 2, 3)
+	fmt.Println(Sum())
+	fmt.Println(Sum(4))
+	fmt.Println(Sum(4, 5, 6))
+}
+func Sum(nums ...int) int {
+	s := 0
+	for i := 0; i < len(nums); i++ {
+		s += nums[i]
+	}
+	return s
+}
+func Demo(numbers ...int) {
+	for _, n := range numbers {
+		fmt.Print(n, " ")
+	}
+	fmt.Println("\n====")
+}
+```
+Unfurl a slice:  
+```go
+fib := []int{1, 1, 2, 3, 5, 8}
+Dem(fib...)
+```
+Example with strings:  
+```go
+func main() {
+	words := []string{"the", "quick", "brown", "fox"}
+	fmt.Println(Join(words...))
+}
+func Join(vals ...string) string {
+	var sb strings.Builder
+	for i, s := range vals {
+		sb.WriteString(s)
+		if i < len(vals)-1 {
+			sb.WriteString(", ")
+		}
+	}
+	return sb.String()
+}
+```
+Start converting to variadic:  
+```go
+// func ParseFS(fs fs.FS, pattern string) (Template, error) {
+func ParseFS(fs fs.FS, pattern ...string) (Template, error) {
+	htmlTpl, err := template.ParseFS(fs, pattern...)
+	// htmlTpl, err := template.ParseFS(fs, pattern)
+	if err != nil { return Template{}, err }
+	return Template{htmlTemplate: htmlTpl}, nil
+}
 ```
 
 ## Named templates 
