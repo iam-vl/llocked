@@ -33,7 +33,12 @@ func main() {
 	// Custom type way
 	ServeStaticPage(r, "/", "home.gohtml")
 	ServeStaticPage(r, "/contact", "contact.gohtml")
-	ServeStaticPage(r, "/faq", "faq.gohtml")
+	// ServeStaticPage(r, "/faq", "faq.gohtml")
+	// r.Get("/faq", controllers.FAQ(views.Must(views.ParseFS(templates.FS, "faq.gohtml"))))
+	faqTpl := views.Must(views.ParseFS(templates.FS, "faq.gohtml"))
+	fmt.Printf("faq tpl type: %T\n", faqTpl)
+	r.Get("/faq", controllers.FAQ(faqTpl))
+	r.Get("/fq", controllers.FAQ(PrepTemplate("faq.gohtml")))
 	ServeStaticPage(r, "/example", "example.gohtml")
 	// r.Get("/", HandleHome)
 	// r.Get("/contact", HandleContacts)
@@ -46,6 +51,9 @@ func main() {
 	})
 	fmt.Println("Starting server on port :1111")
 	http.ListenAndServe(":1111", r)
+}
+func PrepTemplate(tplName string) views.Template {
+	return views.Must(views.ParseFS(templates.FS, tplName))
 }
 
 func ServeStaticPage(r chi.Router, path string, templateName string) {

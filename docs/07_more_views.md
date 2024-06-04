@@ -156,6 +156,80 @@ Define and reuse a template block:
 {{ end }}
 ```
 ## Dynamic FAQ page 
+
+Static.go: 
+```go
+func FAQ(tpl views.Template) http.HandlerFunc {
+	type QA struct {
+		Question string
+		Answer   string
+	}
+	questions := []QA{
+		{
+			Question: "Is there a free version?",
+			Answer:   "Yes, we offer 30 days...",
+		},
+		{
+			Question: "How do I contact support?",
+			Answer:   `Just send us an email at <a href+"mailto:support@llocked.com">support@llocked.com</a>`,
+		},
+	}
+	return func(w http.ResponseWriter, r *http.Request) {
+		tpl.Execute(w, questions)
+	}
+}
+```
+Main:
+```go
+func main() {
+	r := chi.NewRouter()
+	r.Use(middleware.Logger)
+	// ...
+	// r.Get("/faq", controllers.FAQ(views.Must(views.ParseFS(templates.FS, "faq.gohtml"))))
+	r.Get("/faq1, controllers.FAQ(views.Must(views.ParseFS(templates.FS, "faq.gohtml"))))
+	r.Get("/faq2", controllers.FAQ(PrepTemplate("faq.gohtml")))
+	faqTpl := views.Must(views.ParseFS(templates.FS, "faq.gohtml"))
+	r.Get("/faq3", controllers.FAQ(faqTpl))
+	
+	
+	// ... 
+	http.ListenAndServe(":1111", r)
+}
+func PrepTemplate(tplName string) views.Template {
+	return views.Must(views.ParseFS(templates.FS, tplName))
+}
+```
+
+Template V1:  
+```html
+<h1>FAQ page</h1>
+<pre>
+    {{ . }}
+</pre>
+```
+Template v2: 
+```html
+<h1>FAQ page</h1>
+<ul>
+    {{ range . }}
+        {{ template "qa" . }}
+    {{ end }}
+</ul>
+{{ define "qa" }}
+<li><strong>{{ .Question }}</strong>: {{ .Answer }}</li>
+{{ end }}
+```
+Everything ok, except the link. To bypass escaping provided by `html/template`, let's change the type of Answer to `template/html` in `static.go`: 
+
+```go 
+type QA struct {
+	Question string
+	Answer   template.HTML
+	// Answer   string
+}
+``` 
+Done!!!
+
 ## Reusable layouts 
 ## Tailwind CSS 
 ## Utility-first CSS 
