@@ -291,9 +291,9 @@ Contacts page:
 ```
 Routes (main):
 ```go 
-
-
-
+r.Get("/", controllers.HandleStatic(views.Must(views.ParseFS(templates.FS, "layout-page.gohtml", "home-page.gohtml"))))
+r.Get("/contact", controllers.HandleStatic(views.Must(views.ParseFS(templates.FS, "layout-page.gohtml", "contact-page.gohtml"))))
+```
 
 ## Tailwind CSS 
 ## Utility-first CSS 
