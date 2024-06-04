@@ -31,7 +31,9 @@ func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	// Custom type way
-	ServeStaticPage(r, "/", "home.gohtml")
+	// ServeStaticPage(r, "/", "home.gohtml")
+	tpl := views.Must(views.ParseFS(templates.FS, "home.gohtml", "layout-parts.gohtml"))
+	r.Get("/", controllers.HandleStatic(tpl))
 	ServeStaticPage(r, "/contact", "contact.gohtml")
 	// ServeStaticPage(r, "/faq", "faq.gohtml")
 	// r.Get("/faq", controllers.FAQ(views.Must(views.ParseFS(templates.FS, "faq.gohtml"))))

@@ -214,7 +214,7 @@ Template v2:
     {{ range . }}
         {{ template "qa" . }}
     {{ end }}
-</ul>
+</ul>\
 {{ define "qa" }}
 <li><strong>{{ .Question }}</strong>: {{ .Answer }}</li>
 {{ end }}
@@ -231,6 +231,39 @@ type QA struct {
 Done!!!
 
 ## Reusable layouts 
+
+* Appr. 1: Header + footer templates
+* Appr. 2: Named page template
+
+### Approach: Header + footer templates
+
+```html
+{{ template "header" }}
+<h1>Welcome to my awesome site!</h1>
+{{ template "footer" }}
+```
+Create file: `touch templates/layout-parts`
+```html
+{{ define "header" }}
+<html>
+    <body>
+{{ end }}
+
+{{ define "footer" }}
+        <p>Copyright VL 2024</p>
+    </body>
+</html>
+{{ end }}
+```
+Make sure the  template pkg knows abt both files when it's parsing time. 
+To do this, upd main:
+```go
+// ServeStaticPage(r, "/", "home.gohtml")
+tpl := views.Must(views.Parse(templates.FS, "home.gohtml", "layout-parts.gohtml"))
+r.Get("/", controllers.HandleStatic(tpl))
+r.Get("/faq", controllers.FAQ(views.Must(views.ParseFS(templates.FS, "faq.gohtml"))))
+### Approach: Named page template
+
 ## Tailwind CSS 
 ## Utility-first CSS 
 (+ Utility vs component CSS)
