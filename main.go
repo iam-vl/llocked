@@ -30,11 +30,13 @@ func ServeStaticThruType(r chi.Router, path string, templateName string) {
 func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
+	r.Get("/", controllers.HandleStatic(views.Must(views.ParseFS(templates.FS, "layout-page.gohtml", "home-page.gohtml"))))
+	r.Get("/contact", controllers.HandleStatic(views.Must(views.ParseFS(templates.FS, "layout-page.gohtml", "contact-page.gohtml"))))
 	// Custom type way
 	// ServeStaticPage(r, "/", "home.gohtml")
-	tpl := views.Must(views.ParseFS(templates.FS, "home.gohtml", "layout-parts.gohtml"))
-	r.Get("/", controllers.HandleStatic(tpl))
-	ServeStaticPage(r, "/contact", "contact.gohtml")
+	// tpl := views.Must(views.ParseFS(templates.FS, "home.gohtml", "layout-parts.gohtml"))
+	// r.Get("/", controllers.HandleStatic(views.Must(views.ParseFS(templates.FS, "home.gohtml", "layout-parts.gohtml"))))
+	// ServeStaticPage(r, "/contact", "contact.gohtml")
 	// ServeStaticPage(r, "/faq", "faq.gohtml")
 	// r.Get("/faq", controllers.FAQ(views.Must(views.ParseFS(templates.FS, "faq.gohtml"))))
 	faqTpl := views.Must(views.ParseFS(templates.FS, "faq.gohtml"))

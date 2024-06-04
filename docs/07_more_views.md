@@ -264,6 +264,37 @@ r.Get("/", controllers.HandleStatic(tpl))
 r.Get("/faq", controllers.FAQ(views.Must(views.ParseFS(templates.FS, "faq.gohtml"))))
 ### Approach: Named page template
 
+Layout page:   
+```html
+<html>
+<body>
+    <!-- Note: the dot passes all data into the page template -->
+    {{ template "page" . }}
+    <p>Copyright VL 2024</p>
+</body>
+</html>
+```
+Home page:  
+```html
+{{ define "page" }}
+<h1>Welcome to my awesome site!!!</h1>
+{{ end }}
+```
+Contacts page: 
+```html
+{{ define "page" }}
+<h1>Contacts</h1>
+<p>
+    To get in touch, email me at: <a href="mailto:vl@chammy.info"></a>
+</p>
+{{ end }}
+```
+Routes (main):
+```go 
+
+
+
+
 ## Tailwind CSS 
 ## Utility-first CSS 
 (+ Utility vs component CSS)
