@@ -30,23 +30,12 @@ func ServeStaticThruType(r chi.Router, path string, templateName string) {
 func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
-	r.Get("/", controllers.HandleStatic(views.Must(views.ParseFS(templates.FS, "layout-page.gohtml", "home-page.gohtml"))))
-	r.Get("/contact", controllers.HandleStatic(views.Must(views.ParseFS(templates.FS, "layout-page.gohtml", "contact-page.gohtml"))))
-	// Custom type way
-	// ServeStaticPage(r, "/", "home.gohtml")
-	// tpl := views.Must(views.ParseFS(templates.FS, "home.gohtml", "layout-parts.gohtml"))
-	// r.Get("/", controllers.HandleStatic(views.Must(views.ParseFS(templates.FS, "home.gohtml", "layout-parts.gohtml"))))
-	// ServeStaticPage(r, "/contact", "contact.gohtml")
-	// ServeStaticPage(r, "/faq", "faq.gohtml")
-	// r.Get("/faq", controllers.FAQ(views.Must(views.ParseFS(templates.FS, "faq.gohtml"))))
-	faqTpl := views.Must(views.ParseFS(templates.FS, "faq.gohtml"))
-	fmt.Printf("faq tpl type: %T\n", faqTpl)
-	r.Get("/faq", controllers.FAQ(faqTpl))
-	r.Get("/fq", controllers.FAQ(PrepTemplate("faq.gohtml")))
+	// r.Get("/", controllers.HandleStatic(views.Must(views.ParseFS(templates.FS, "layout-page.gohtml", "home-page.gohtml"))))
+	// r.Get("/contact", controllers.HandleStatic(views.Must(views.ParseFS(templates.FS, "layout-page.gohtml", "contact-page.gohtml"))))
+	r.Get("/", controllers.HandleStatic(views.Must(views.ParseFS(templates.FS, "home.gohtml", "tailwind.gohtml"))))
+	r.Get("/contact", controllers.HandleStatic(views.Must(views.ParseFS(templates.FS, "contact.gohtml", "tailwind.gohtml"))))
+	r.Get("/faq", controllers.FAQ(PrepTemplateTailwind("faq.gohtml")))
 	ServeStaticPage(r, "/example", "example.gohtml")
-	// r.Get("/", HandleHome)
-	// r.Get("/contact", HandleContacts)
-	// r.Get("/faq", HandleFAQ)
 	r.Get("/galleries/{id}", HandleGallery)
 	// Chi router provides NotFound()
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
@@ -56,8 +45,8 @@ func main() {
 	fmt.Println("Starting server on port :1111")
 	http.ListenAndServe(":1111", r)
 }
-func PrepTemplate(tplName string) views.Template {
-	return views.Must(views.ParseFS(templates.FS, tplName))
+func PrepTemplateTailwind(tplName string) views.Template {
+	return views.Must(views.ParseFS(templates.FS, tplName, "tailwind.gohtml"))
 }
 
 func ServeStaticPage(r chi.Router, path string, templateName string) {

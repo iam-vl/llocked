@@ -1,13 +1,16 @@
+{{ template "header" . }}
 <h1>FAQ page</h1>
 <ul>
     {{ range . }}
         {{ template "qa" . }}
     {{ end }}
 </ul>
+{{ template "footer" . }}
 
 {{ define "qa" }}
 <li><strong>{{ .Question }}</strong>: {{ .Answer }}</li>
 {{ end }}
+
 <!-- <ul>
     <li>
         <b>Is there a free version?</b> Yes, we offer 30 days...

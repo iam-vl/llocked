@@ -295,7 +295,61 @@ r.Get("/", controllers.HandleStatic(views.Must(views.ParseFS(templates.FS, "layo
 r.Get("/contact", controllers.HandleStatic(views.Must(views.ParseFS(templates.FS, "layout-page.gohtml", "contact-page.gohtml"))))
 ```
 
-## Tailwind CSS 
+## Tailwind CSS  
+
+`templates/tailwind.gohtml`: https://v2.tailwindcss.com/docs/installation#html-starter-template 
+```html
+{{ define "header" }}
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+{{ end}}
+  <!-- Content -->
+{{ define "header" }}
+</body>
+</html>
+{{ end}}
+```
+
+Update templates like faq.gohtml:
+```html
+{{ template "header" . }}
+<h1>FAQ page</h1>
+<ul>
+    {{ range . }}
+        {{ template "qa" . }}
+    {{ end }}
+</ul>
+{{ template "footer" . }}
+
+{{ define "qa" }}
+<li><strong>{{ .Question }}</strong>: {{ .Answer }}</li>
+{{ end }}
+```
+Update the templates: 
+```go 
+func main() {
+	r := chi.NewRouter()
+	r.Use(middleware.Logger)
+	r.Get("/", controllers.HandleStatic(views.Must(views.ParseFS(templates.FS, "home.gohtml", "tailwind.gohtml"))))
+	r.Get("/contact", controllers.HandleStatic(views.Must(views.ParseFS(templates.FS, "contact.gohtml", "tailwind.gohtml"))))
+	r.Get("/faq", controllers.FAQ(PrepTemplateTailwind("faq.gohtml")))
+	ServeStaticPage(r, "/example", "example.gohtml")
+	// ...
+	http.ListenAndServe(":1111", r)
+}
+func PrepTemplateTailwind(tplName string) views.Template {
+	return views.Must(views.ParseFS(templates.FS, tplName, "tailwind.gohtml"))
+}
+```
+
+
+
 ## Utility-first CSS 
 (+ Utility vs component CSS)
 ## Adding a nav bar 
