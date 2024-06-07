@@ -2,13 +2,12 @@ package controllers
 
 import (
 	"net/http"
-
-	"github.com/iam-vl/llocked/views"
 )
 
 type Users struct {
 	Templates struct {
-		New views.Template
+		// New views.Template
+		New TemplateExecuter
 	}
 }
 

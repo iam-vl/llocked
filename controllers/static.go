@@ -3,12 +3,11 @@ package controllers
 import (
 	"html/template"
 	"net/http"
-
-	"github.com/iam-vl/llocked/views"
 )
 
 type Static struct {
-	Template views.Template
+	Template TemplateExecuter
+	// Template views.Template
 }
 
 func (s Static) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -16,13 +15,15 @@ func (s Static) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 // Closure approach
-func HandleStatic(tpl views.Template) http.HandlerFunc {
+// func HandleStatic(tpl views.Template) http.HandlerFunc {
+func HandleStatic(tpl TemplateExecuter) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		tpl.Execute(w, nil)
 	}
 }
 
-func FAQ(tpl views.Template) http.HandlerFunc {
+// func FAQ(tpl views.Template) http.HandlerFunc {
+func FAQ(tpl TemplateExecuter) http.HandlerFunc {
 	type QA struct {
 		Question string
 		Answer   template.HTML

@@ -86,7 +86,7 @@ HTTP Method | Path | Comment
 ## Users controller 
 
 Shell: `touch controllers/users.go`.  
-``go
+```go
 type Users struct {
 	Templates struct { 
         New views.Template 
@@ -105,5 +105,74 @@ r.Get("/signup", userC.New)
 ```
 
 ## Decouple with interfaces 
+Existing thing cont/users
+```go
+func (u Users) New(w http.ResponseWriter, r *http.Request) {
+	u.Templates.New.Execute(w, nil)
+}
+```
+Existing in views/template.go:  
+```go
+func (t Template) Execute(w http.ResponseWriter, data interface{}) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	err := t.htmlTemplate.Execute(w, data)
+	if err != nil {
+		log.Printf("executing template: %v", err)
+		http.Error(w, "There was an error executing the template.", http.StatusInternalServerError)
+		return
+	}
+}
+```
+1. New controllers/template.go: 
+```go
+type TemplateExecuter interface {
+	Execute(w http.ResponseWriter, data interface{})
+}
+```
+2. Change controllers/users.go: 
+```go
+type Users struct {
+	Templates struct {
+		// New views.Template
+		New TemplateExecuter
+	}
+}
+```
+3. Change controllers/static.go:  
+```go
+type Static struct {
+	Template TemplateExecuter
+	// Template views.Template
+}
+
+func (s Static) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	s.Template.Execute(w, nil)
+}
+// func HandleStatic(tpl views.Template) http.HandlerFunc {
+func HandleStatic(tpl TemplateExecuter) http.HandlerFunc {
+	// ...
+}
+
+// func FAQ(tpl views.Template) http.HandlerFunc {
+func FAQ(tpl TemplateExecuter) http.HandlerFunc {
+	// ...
+}
+```
+Removed the views imp[ort from controllers.
+Cyclical depoendencies: 
+```
+package controllers
+import /views
+package views
+import controllers 
+```
+More complex import cycles:
+```
+A imports B
+B imports C
+C imports A
+```
+
+
 ## Parsing the form
 ## URL query parameters
