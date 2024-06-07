@@ -84,6 +84,26 @@ HTTP Method | Path | Comment
 
 
 ## Users controller 
+
+Shell: `touch controllers/users.go`.  
+``go
+type Users struct {
+	Templates struct { 
+        New views.Template 
+    }
+}
+func (u Users) New(w http.ResponseWriter, r *http.Request) {
+	u.Templates.New.Execute(w, nil)
+}
+```
+Main: 
+```go
+// r.Get("/signup", controllers.HandleStatic(PrepTemplateTailwind("signup.gohtml")))
+var userC controllers.Users
+userC.Templates.New = PrepTemplateTailwind("signup.gohtml")
+r.Get("/signup", userC.New)
+```
+
 ## Decouple with interfaces 
 ## Parsing the form
 ## URL query parameters
