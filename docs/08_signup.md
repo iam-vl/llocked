@@ -174,5 +174,39 @@ C imports A
 ```
 
 
-## Parsing the form
+## Parsing the form 
+
+New method: 
+```go
+func (u Users) Create(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprint(w, "temporary response") // show in the browser
+}
+```
+New route: 
+```go
+r.Post("/signup", userC.Create)
+```
+Form is part of http.Request: 
+```go
+type Request struct {
+	// PostForm contains paresed form data from PATCH, POST and PUT requests
+	// The field is only available after PostForm is called
+	PostForm url.Values 
+	// other fields...
+}
+```
+We get this by using `ParseForm()` on `http.Request` (idempotent function):
+```go
+func (u Users) Create(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		http.Error(w, "unable to parse form submission", http.StatusBadRequest)
+		return
+	}
+	fmt.Fprintf(w, "<p>Email: %s</p>", r.PostForm.Get("email"))
+	fmt.Fprintf(w, "<p>Password: %s</p>", r.PostForm.Get("password"))
+}
+```
+
+
 ## URL query parameters

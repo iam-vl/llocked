@@ -39,6 +39,7 @@ func main() {
 	var userC controllers.Users
 	userC.Templates.New = PrepTemplateTailwind("signup.gohtml")
 	r.Get("/signup", userC.New)
+	r.Post("/signup", userC.Create)
 	// r.Get("/faq", controllers.FAQ(views.Must(views.ParseFS(templates.FS, "faq.gohtml", "tailwind.gohtml"))))
 	ServeStaticPage(r, "/example", "example.gohtml")
 	r.Get("/galleries/{id}", HandleGallery)
