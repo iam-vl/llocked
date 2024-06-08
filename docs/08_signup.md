@@ -159,7 +159,7 @@ func FAQ(tpl TemplateExecuter) http.HandlerFunc {
 }
 ```
 Removed the views imp[ort from controllers.
-Cyclical depoendencies: 
+Cyclical dependencies: 
 ```
 package controllers
 import /views
@@ -210,3 +210,30 @@ func (u Users) Create(w http.ResponseWriter, r *http.Request) {
 
 
 ## URL query parameters
+
+Example: `https://example.com/widgets?page=3`
+
+Uses:
+* Parameters (Note about encoding like `@`=`%40`)
+* Pre-populate form values (email link = email, license key)
+
+Update `Users.New()`:
+```go
+func (u Users) New(w http.ResponseWriter, r *http.Request) {
+	var data struct {
+		Email string
+	}
+	data.Email = r.FormValue("email")
+	// u.Templates.New.Execute(w, nil)
+	u.Templates.New.Execute(w, data)
+}
+```
+Template: 
+```html
+<input value="{{.Email}}" .../>
+```
+Have the cursor start inside the first empty box `autofocus`. 
+```
+<input value="{{.Email}}" .../>
+{{if not .Email}}autofocus{{end}}
+```
