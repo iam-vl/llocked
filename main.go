@@ -40,7 +40,10 @@ func main() {
 	userC.Templates.New = PrepTemplateTailwind("signup.gohtml")
 	r.Get("/signup", userC.New)
 	r.Post("/signup", userC.Create)
-	r.Get("/coupon", controllers.HandleStatic(PrepTemplateTailwind("coupon.gohtml")))
+	var couponC controllers.Users
+	couponC.Templates.New = PrepTemplateTailwind("coupon.gohtml")
+	r.Get("/coupon", couponC.New)
+	// r.Get("/coupon", controllers.HandleStatic(PrepTemplateTailwind("coupon.gohtml")))
 	// r.Get("/faq", controllers.FAQ(views.Must(views.ParseFS(templates.FS, "faq.gohtml", "tailwind.gohtml"))))
 	ServeStaticPage(r, "/example", "example.gohtml")
 	r.Get("/galleries/{id}", HandleGallery)
@@ -52,6 +55,7 @@ func main() {
 	fmt.Println("Starting server on port :1111")
 	http.ListenAndServe(":1111", r)
 }
+
 func PrepTemplateTailwind(tplName string) views.Template {
 	return views.Must(views.ParseFS(templates.FS, tplName, "tailwind.gohtml"))
 }
