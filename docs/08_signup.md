@@ -158,7 +158,7 @@ func FAQ(tpl TemplateExecuter) http.HandlerFunc {
 	// ...
 }
 ```
-Removed the views imp[ort from controllers.
+Removed the views import from controllers.
 Cyclical dependencies: 
 ```
 package controllers
