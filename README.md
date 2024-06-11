@@ -7,6 +7,14 @@ go install github.com/cortesi/modd/cmd/modd@latest
 modd --version
 ```
 
+## Checking services
+
+```
+service mongod status
+systemctl status mysql
+systemctl status postgresql
+```
+
 
 ## Toolchain 
 
