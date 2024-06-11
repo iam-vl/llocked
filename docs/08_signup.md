@@ -204,7 +204,7 @@ func (u Users) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Fprintf(w, "<p>Email: %s</p>", r.PostForm.Get("email"))
-	fmt.Fprintf(w, "<p>Password: %s</p>", r.PostForm.Get("password"))
+	fmt.Fprintf(w, "<p>Password: %s</p>", r.PostForm.Get("password"))`
 }
 ```
 

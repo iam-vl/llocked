@@ -43,6 +43,7 @@ func main() {
 	var couponC controllers.Users
 	couponC.Templates.New = PrepTemplateTailwind("coupon.gohtml")
 	r.Get("/coupon", couponC.New)
+	r.Post("/coupon", couponC.Coupon)
 	// r.Get("/coupon", controllers.HandleStatic(PrepTemplateTailwind("coupon.gohtml")))
 	// r.Get("/faq", controllers.FAQ(views.Must(views.ParseFS(templates.FS, "faq.gohtml", "tailwind.gohtml"))))
 	ServeStaticPage(r, "/example", "example.gohtml")

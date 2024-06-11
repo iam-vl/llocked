@@ -6,8 +6,9 @@ import (
 )
 
 type Static struct {
-	Template TemplateExecuter
 	// Template views.Template
+	Template TemplateExecuter
+	CouponT  Couponer
 }
 
 func (s Static) ServeHTTP(w http.ResponseWriter, r *http.Request) {
