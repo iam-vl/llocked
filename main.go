@@ -38,8 +38,8 @@ func main() {
 	// r.Get("/signup", controllers.HandleStatic(PrepTemplateTailwind("signup.gohtml")))
 	var userC controllers.Users
 	userC.Templates.New = PrepTemplateTailwind("signup.gohtml")
-	r.Get("/signup", userC.New)
-	r.Post("/signup", userC.Create)
+	r.Get("/signup2", userC.New)
+	r.Post("/signup2", userC.Create)
 	var couponC controllers.Users
 	couponC.Templates.New = PrepTemplateTailwind("coupon.gohtml")
 	r.Get("/coupon", couponC.New)
