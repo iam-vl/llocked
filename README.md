@@ -10,8 +10,8 @@ modd --version
 ## Checking services
 
 ```
-service mongod status
-systemctl status mysql
+service mongod status|disable
+systemctl status|disable mysql
 systemctl status postgresql
 ```
 
