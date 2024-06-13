@@ -1,11 +1,37 @@
 package main
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 	"log"
 	"strings"
+
+	_ "github.com/jackc/pgx/v4/stdlib"
 )
+
+func main() {
+	db, err := sql.Open("pgx", "host=localhost port=5432 user=vl dbname=llocked password=123admin")
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+	err = db.Ping()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Ping ok")
+	// words := []string{"the", "quick", "brown", "fox"}
+	// fmt.Println(Join(words...))
+
+	// Demo()
+	// Demo(1)
+	// Demo(1, 2, 3)
+	// fmt.Println(Sum())
+	// fmt.Println(Sum(4))
+	// fmt.Println(Sum(4, 5, 6))
+
+}
 
 func Connect() error {
 	// deliberate error connecting smth
@@ -35,18 +61,6 @@ func CreateOrg() error {
 // 	return nil
 // }
 
-func main() {
-	words := []string{"the", "quick", "brown", "fox"}
-	fmt.Println(Join(words...))
-
-	// Demo()
-	// Demo(1)
-	// Demo(1, 2, 3)
-	// fmt.Println(Sum())
-	// fmt.Println(Sum(4))
-	// fmt.Println(Sum(4, 5, 6))
-
-}
 func Join(vals ...string) string {
 	var sb strings.Builder
 	for i, s := range vals {
