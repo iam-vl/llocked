@@ -136,6 +136,10 @@ func main() {
 		panic(err)
 	}
 	fmt.Println("Tables created.")
+	name := "VL"
+	email := "vl@chammy.info"
+	_, err = db.Exec(`INSERT INTO users(name, email) VALUES ($1, $2);`, name, email)
+	panicR(err)
 }
 
 ## Inserting records with Go
