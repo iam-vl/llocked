@@ -81,6 +81,11 @@ sql.Open(pgx.DefaultDriver, "host=localhost port=5432 user=vl password=123admin 
 ```
 
 ## Postgres config type
+
+Let's refactor the conn string:
+```go 
+```
+
 ## Executing SQL with Go
 ## Inserting records with Go
 ## SQL injection 
