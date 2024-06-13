@@ -35,7 +35,6 @@ func main() {
 		SSLMode:  "disable",
 	}
 	db, err := sql.Open("pgx", cfg.String())
-	// db, err := sql.Open("pgx", "host=localhost port=5432 user=vl dbname=llocked password=123admin")
 	if err != nil {
 		panic(err)
 	}
@@ -45,16 +44,21 @@ func main() {
 		panic(err)
 	}
 	fmt.Println("Ping ok")
-	// words := []string{"the", "quick", "brown", "fox"}
-	// fmt.Println(Join(words...))
-
-	// Demo()
-	// Demo(1)
-	// Demo(1, 2, 3)
-	// fmt.Println(Sum())
-	// fmt.Println(Sum(4))
-	// fmt.Println(Sum(4, 5, 6))
-
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS users (
+		id SERIAL PRIMARY KEY,
+		name TEXT,
+		email TEXT NOT NULL
+	);
+	CREATE TABLE IF NOT EXISTS orders (
+		id SERIAL PRIMARY KEY,
+		user_id INT NOT NULL, 
+		amount INT,
+		description TEXT
+	);`)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Tables created.")
 }
 
 func Connect() error {

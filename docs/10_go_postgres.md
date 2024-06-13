@@ -84,9 +84,60 @@ sql.Open(pgx.DefaultDriver, "host=localhost port=5432 user=vl password=123admin 
 
 Let's refactor the conn string:
 ```go 
+type PostgresConfig struct {
+	Host     string
+	Port     string
+	User     string
+	Password string
+	Database string
+	SSLMode  string
+}
+func (cfg PostgresConfig) String() string {
+	return fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=%s",
+		cfg.Host, cfg.Port, cfg.User, cfg.Database, cfg.Password, cfg.SSLMode,
+	)
+}
+func main() {
+	cfg := PostgresConfig{
+		Host:     "localhost",
+		Port:     "5432",
+		User:     "vl",
+		Password: "123admin",
+		Database: "llocked",
+		SSLMode:  "disable",
+	}
+	db, _ := sql.Open("pgx", cfg.String())
+	defer db.Close()
+	_ = db.Ping()
+	fmt.Println("Ping ok")
+	// ...
+}
 ```
 
-## Executing SQL with Go
+## Executing SQL with Go 
+
+Go funcs for queries: Query (*lines), QueryRow() single line, Exec() everything else. 
+Exp:  
+```go 
+func main() {
+	// ...
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS users (
+		id SERIAL PRIMARY KEY,
+		name TEXT,
+		email TEXT NOT NULL
+	);
+	CREATE TABLE IF NOT EXISTS orders (
+		id SERIAL PRIMARY KEY,
+		user_id INT NOT NULL, 
+		amount INT,
+		description TEXT
+	);`)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Tables created.")
+}
+
 ## Inserting records with Go
 ## SQL injection 
 ## Acquiring a new record ID

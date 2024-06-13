@@ -43,6 +43,11 @@ Rebuild services from scratch: `docker compose down`
 Run out docker containers in detouched mode: `docker compose up -d`
 To stop cont's running detouched: `docker compose stop`
 Check running apps: `docker compose ls`
+Reset database: 
+```
+docker compose down
+docker compose up
+```
 
 Run a binary inside a docker cont: `docker compose exec -it db psql -U vl -d llocked`
 * exec: execute a binary inside a container run by docker compose
