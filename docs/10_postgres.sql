@@ -9,3 +9,4 @@ CREATE TABLE IF NOT EXISTS orders (
     amount INT,
     description TEXT
 );
+INSERT INTO users(name, email) VALUES ('VL', 'vl@chammy.info');

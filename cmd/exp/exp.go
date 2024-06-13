@@ -35,14 +35,11 @@ func main() {
 		SSLMode:  "disable",
 	}
 	db, err := sql.Open("pgx", cfg.String())
-	if err != nil {
-		panic(err)
-	}
+	panicR(err)
 	defer db.Close()
 	err = db.Ping()
-	if err != nil {
-		panic(err)
-	}
+	panicR(err)
+
 	fmt.Println("Ping ok")
 	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS users (
 		id SERIAL PRIMARY KEY,
@@ -55,10 +52,18 @@ func main() {
 		amount INT,
 		description TEXT
 	);`)
+	panicR(err)
+	fmt.Println("Tables created.")
+
+	name := "VL"
+	email := "vl@chammy.info"
+	_, err = db.Exec(`INSERT INTO users(name, email) VALUES ($1, $2);`, name, email)
+	panicR(err)
+}
+func panicR(err error) {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("Tables created.")
 }
 
 func Connect() error {
