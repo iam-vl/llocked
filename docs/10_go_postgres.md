@@ -132,18 +132,37 @@ func main() {
 		amount INT,
 		description TEXT
 	);`)
-	if err != nil {
-		panic(err)
-	}
+	panicR(err)
 	fmt.Println("Tables created.")
 	name := "VL"
 	email := "vl@chammy.info"
 	_, err = db.Exec(`INSERT INTO users(name, email) VALUES ($1, $2);`, name, email)
 	panicR(err)
 }
+```
 
-## Inserting records with Go
 ## SQL injection 
+
+```go
+_, err = db.Exec(`INSERT INTO users(name, email) VALUES ($1, $2);`, name, email)
+```
+
+Example injection:
+```go
+name := "',''); DROP TABLE users; --"
+email := "vl@faker.info"
+// query := fmt.Sprintf(`INSERT INTO users(name, email) VALUES ('%s', '%s');`, name, email)
+_, err = db.Exec(query)
+panicR(err)
+fmt.Println("User created")
+```
+Result: 
+```sql
+llocked=# select * from users;
+ERROR:  relation "users" does not exist
+LINE 1: select * from users;
+```
+
 ## Acquiring a new record ID
 ## Querying a single record
 ## Creating sample orders 

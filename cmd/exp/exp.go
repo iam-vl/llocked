@@ -55,10 +55,13 @@ func main() {
 	panicR(err)
 	fmt.Println("Tables created.")
 
-	name := "VL"
-	email := "vl@chammy.info"
+	name := "',''); DROP TABLE users; --"
+	email := "vl@faker.info"
+	// query := fmt.Sprintf(`INSERT INTO users(name, email) VALUES ('%s', '%s');`, name, email)
+	// _, err = db.Exec(query)
 	_, err = db.Exec(`INSERT INTO users(name, email) VALUES ($1, $2);`, name, email)
 	panicR(err)
+	fmt.Println("User created")
 }
 func panicR(err error) {
 	if err != nil {
