@@ -115,6 +115,31 @@ VALUES (40, 'V', 'L', 'vl@chammy.info');
 INSERT 0 1
 ```
 
+## Querying, updating, and deleting records 
 
+```sql
+SELECT * FROM users;
+SELECT id, email FROM users;
+SELECT * FROM users
+WHERE age < 30 OR last_name = 'Smith';
+```
+Updating: 
+```sql
+UPDATE users
+SET first_name = 'John', last_name = 'Appleseed'
+WHERE id = 2;
+-- Update all users
+UPDATE users
+SET first_name = 'John';
+UPDATE users
+SET first_name = 'Jon'
+WHERE first_name = 'John';
+```
+Deleting:  
+```sql
+INSERT INTO users (age, email, first_name, last_name)
+VALUES (40, 'gztrk@engineer.com', 'V', 'L');
+DELETE FROM users WHERE id = 3;
+```
 
 
