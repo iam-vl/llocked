@@ -70,7 +70,7 @@ func main() {
 	// err = row.Scan(&id)
 	// panicR(err)
 	// fmt.Println("User created. ID:", id)
-	id := 6
+	id := 2
 	row := db.QueryRow(`SELECT name, email FROM users WHERE id=$1;`, id)
 	var name, email string
 	err = row.Scan(&name, &email)
@@ -79,6 +79,14 @@ func main() {
 	}
 	panicR(err)
 	fmt.Printf("User information: name=%s, email=%s\n", name, email)
+	userId := id
+	for i := 1; i <= 5; i++ {
+		amt := i * 100
+		desc := fmt.Sprintf("Fake order #%d", i)
+		_, err := db.Exec(`INSERT INTO orders (user_id, amount, description) VALUES ($1, $2, $3)`, userId, amt, desc)
+		panicR(err)
+	}
+	fmt.Println("Created fake orders. ")
 
 }
 func panicR(err error) {
