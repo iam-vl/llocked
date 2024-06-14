@@ -209,6 +209,17 @@ panic: sql: no rows in result set
 ```
 
 ## Creating sample orders 
+
+```go
+userId := id
+for i := 1; i <= 5; i++ {
+	amt := i * 100
+	desc := fmt.Sprintf("Fake order #%d", i)
+	_, err := db.Exec(`INSERT INTO orders (user_id, amount, description) VALUES ($1, $2, $3)`, userId, amt, desc)
+	panicR(err)
+}
+fmt.Println("Created fake orders. ")
+```
 ## Querying multiple records 
 ## ORM vs SQL
 
