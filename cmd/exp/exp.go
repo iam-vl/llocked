@@ -53,15 +53,33 @@ func main() {
 		description TEXT
 	);`)
 	panicR(err)
-	fmt.Println("Tables created.")
+	fmt.Println("Tables created or alreary existing.")
 
-	name := "',''); DROP TABLE users; --"
-	email := "vl@faker.info"
-	// query := fmt.Sprintf(`INSERT INTO users(name, email) VALUES ('%s', '%s');`, name, email)
-	// _, err = db.Exec(query)
-	_, err = db.Exec(`INSERT INTO users(name, email) VALUES ($1, $2);`, name, email)
+	// name := "',''); DROP TABLE users; --"
+	// email := "vl@faker.info"
+	// // query := fmt.Sprintf(`INSERT INTO users(name, email) VALUES ('%s', '%s');`, name, email)
+	// // _, err = db.Exec(query)
+	// _, err = db.Exec(`INSERT INTO users(name, email) VALUES ($1, $2);`, name, email)
+	// panicR(err)
+	// fmt.Println("User created")
+	// name := "Mark Twain"
+	// email := "mark@chammy.info"
+	// row := db.QueryRow(`INSERT INTO users (name, email) VALUES($1, $2) RETURNING id;`,
+	// 	name, email)
+	// var id int
+	// err = row.Scan(&id)
+	// panicR(err)
+	// fmt.Println("User created. ID:", id)
+	id := 6
+	row := db.QueryRow(`SELECT name, email FROM users WHERE id=$1;`, id)
+	var name, email string
+	err = row.Scan(&name, &email)
+	if err == sql.ErrNoRows {
+		fmt.Println("Error, no rows!")
+	}
 	panicR(err)
-	fmt.Println("User created")
+	fmt.Printf("User information: name=%s, email=%s\n", name, email)
+
 }
 func panicR(err error) {
 	if err != nil {

@@ -10,3 +10,7 @@ CREATE TABLE IF NOT EXISTS orders (
     description TEXT
 );
 INSERT INTO users(name, email) VALUES ('VL', 'vl@chammy.info');
+INSERT INTO users(name, email) 
+VALUES ('VL', 'vl@chammy.info')
+RETURNING id;
+

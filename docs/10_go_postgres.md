@@ -164,7 +164,50 @@ LINE 1: select * from users;
 ```
 
 ## Acquiring a new record ID
+
+DB must return the ID. 
+Exec signature: `db.Exec(query) (sql.Result, error)` - not working 
+Example SQL:  
+```sql
+INSERT INTO users (name, email) VALUES($1, $2) RETURNING id;
+```
+Entire thing: 
+```go
+name := "VL"
+email := "vl@chammy.info"
+row := db.QueryRow(`INSERT INTO users (name, email) VALUES($1, $2) RETURNING id;`,
+	name, email) // *sql.Row
+var id int
+err = row.Scan(&id)
+panicR(err)
+fmt.Println("User created. ID:", id)
+```
+
 ## Querying a single record
+
+```sql
+SELECT name, email FROM users WHERE id=1;
+``` 
+Go example: 
+```go
+id := 2
+row := db.QueryRow(`SELECT name, email FROM users WHERE id=$1;`, id)
+var name, email string
+err = row.Scan(&name, &email)
+if err == sql.ErrNoRows {
+	fmt.Println("Error, no rows!")
+}
+panicR(err)
+fmt.Printf("User information: name=%s, email=%s\n", name, email)
+```
+Example: 
+```
+Ping ok
+Tables created or alreary existing.
+Error, no rows!
+panic: sql: no rows in result set
+```
+
 ## Creating sample orders 
 ## Querying multiple records 
 ## ORM vs SQL
