@@ -117,6 +117,12 @@ func main() {
 ## Executing SQL with Go 
 
 Go funcs for queries: Query (*lines), QueryRow() single line, Exec() everything else. 
+```go
+db.Exec(query string, args ...any) (sql.Result, error)
+db.Query(query string, args ...any) (*sql.Rows, error)
+db.QueryRow(query string, args ...any) *sql.Row
+```
+
 Exp:  
 ```go 
 func main() {
@@ -221,5 +227,26 @@ for i := 1; i <= 5; i++ {
 fmt.Println("Created fake orders. ")
 ```
 ## Querying multiple records 
+
+```go
+var orders []Order
+userId := 2
+rows, err := db.Query(`SELECT id, amount, description FROM orders WHERE user_id=$1;`, userId)
+fmt.Printf("Rows type: %T\n", rows)
+panicR(err)
+defer rows.Close()
+for rows.Next() {
+	var o Order
+	o.UserID = userId
+	err := rows.Scan(&o.ID, &o.Amount, &o.Description)
+	panicR(err)
+	fmt.Printf("Order: %+v\n", o)
+	orders = append(orders, o)
+}
+err = rows.Err()
+panicR(err)
+fmt.Printf("Orders length: %d\n", len(orders))
+```
+
 ## ORM vs SQL
 

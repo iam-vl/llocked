@@ -14,4 +14,6 @@ INSERT INTO users(name, email)
 VALUES ('VL', 'vl@chammy.info')
 RETURNING id;
 INSERT INTO orders (user_id, amount, description) 
-VALUES ($1, $2, $3)
+VALUES ($1, $2, $3);
+SELECT id, amount, description FROM orders
+WHERE id=$1;
