@@ -49,7 +49,7 @@ func tweetDbQuery() string {
 	return query
 }
 
-func main() {
+func mainTweet() {
 	cfg := PgrConfig{
 		Host:     "localhost",
 		Port:     "5432",
