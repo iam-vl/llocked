@@ -160,18 +160,18 @@ func main1204() {
 }
 ```
 
-func DefaulPgrConfig() PgrConfig {
-	return PgrConfig{
-		Host:     "localhost",
-		Port:     "5432",
-		User:     "vl",
-		Password: "123admin",
-		Database: "llocked",
-		SSLMode:  "disable",
+## UserService + Users controller 
+
+```go
+type Users struct {
+	Templates struct {
+		// New views.Template
+		New TemplateExecuter
 	}
+	// Make userservice available inside user.go
+	UserService *models.UserService
 }
 ```
-## UserService + Users controller 
 ## Create users on signup
 ## Signin view
 ## Auth users

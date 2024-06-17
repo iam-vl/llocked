@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
@@ -9,6 +10,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/iam-vl/llocked/controllers"
+	"github.com/iam-vl/llocked/models"
 	"github.com/iam-vl/llocked/templates"
 	"github.com/iam-vl/llocked/views"
 )
@@ -27,25 +29,19 @@ func ServeStaticThruType(r chi.Router, path string, templateName string) {
 	})
 }
 
-func main() {
-	r := chi.NewRouter()
-	r.Use(middleware.Logger)
-	// r.Get("/", controllers.HandleStatic(views.Must(views.ParseFS(templates.FS, "layout-page.gohtml", "home-page.gohtml"))))
-	// r.Get("/contact", controllers.HandleStatic(views.Must(views.ParseFS(templates.FS, "layout-page.gohtml", "contact-page.gohtml"))))
+func SetupDbConnection() *sql.DB {
+	cfg := models.DefaulPgrConfig()
+	db, err := models.Open(cfg)
+	if err != nil {
+		panic(err)
+	}
+	return db
+}
+
+func ServeStaticsChi(r *chi.Mux) {
 	r.Get("/", controllers.HandleStatic(views.Must(views.ParseFS(templates.FS, "home.gohtml", "tailwind.gohtml"))))
 	r.Get("/contact", controllers.HandleStatic(views.Must(views.ParseFS(templates.FS, "contact.gohtml", "tailwind.gohtml"))))
 	r.Get("/faq", controllers.FAQ(PrepTemplateTailwind("faq.gohtml")))
-	// r.Get("/signup", controllers.HandleStatic(PrepTemplateTailwind("signup.gohtml")))
-	var userC controllers.Users
-	userC.Templates.New = PrepTemplateTailwind("signup.gohtml")
-	r.Get("/signup2", userC.New)
-	r.Post("/signup2", userC.Create)
-	var couponC controllers.Users
-	couponC.Templates.New = PrepTemplateTailwind("coupon.gohtml")
-	r.Get("/coupon", couponC.New)
-	r.Post("/coupon", couponC.Coupon)
-	// r.Get("/coupon", controllers.HandleStatic(PrepTemplateTailwind("coupon.gohtml")))
-	// r.Get("/faq", controllers.FAQ(views.Must(views.ParseFS(templates.FS, "faq.gohtml", "tailwind.gohtml"))))
 	ServeStaticPage(r, "/example", "example.gohtml")
 	r.Get("/galleries/{id}", HandleGallery)
 	// Chi router provides NotFound()
@@ -53,6 +49,28 @@ func main() {
 		content := fmt.Sprintf("<h1>Page not found</h1><p>Requested URL: %s</p>", r.URL.Path)
 		http.Error(w, content, http.StatusNotFound)
 	})
+}
+
+func main() {
+	r := chi.NewRouter()
+	r.Use(middleware.Logger)
+	ServeStaticsChi(r)
+
+	db := SetupDbConnection()
+	defer db.Close()
+
+	// Set up model services and controllers
+	userService := models.UserService{
+		DB: db,
+	}
+	userC := controllers.Users{
+		UserService: &userService,
+	}
+
+	userC.Templates.New = PrepTemplateTailwind("signup.gohtml")
+	r.Get("/signup2", userC.New)
+	r.Post("/signup2", userC.Create)
+
 	fmt.Println("Starting server on port :1111")
 	http.ListenAndServe(":1111", r)
 }
@@ -65,15 +83,6 @@ func ServeStaticPage(r chi.Router, path string, templateName string) {
 	tpl := views.Must(views.ParseFS(templates.FS, templateName))
 	// tpl := views.Must(views.Parse(filepath.Join("templates", templateName)))
 	r.Get(path, controllers.HandleStatic(tpl))
-	// tpl, err := views.Parse(filepath.Join("templates", templateName))
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// r.Method(http.MethodGet, path, controllers.Static{
-	// 	Template: tpl,
-	// })
-	// Closure way
-	// r.Get(path, controllers.HandleStatic(tpl))
 }
 
 // func ServeTemplateGet(r *http.Request, filename string, path string) {
