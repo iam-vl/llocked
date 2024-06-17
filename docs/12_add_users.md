@@ -172,6 +172,32 @@ type Users struct {
 	UserService *models.UserService
 }
 ```
+Main.go:  
+```go
+func main() {
+	r := chi.NewRouter()
+	r.Use(middleware.Logger)
+	ServeStaticsChi(r) // all statics + not found
+
+	db := SetupDbConnection()
+	defer db.Close()
+
+	// Set up model services and controllers
+	userService := models.UserService{
+		DB: db,
+	}
+	userC := controllers.Users{
+		UserService: &userService,
+	}
+
+	userC.Templates.New = PrepTemplateTailwind("signup.gohtml")
+	r.Get("/signup2", userC.New)
+	r.Post("/signup2", userC.Create)
+
+	fmt.Println("Starting server on port :1111")
+	http.ListenAndServe(":1111", r)
+}
+```
 ## Create users on signup
 ## Signin view
 ## Auth users
