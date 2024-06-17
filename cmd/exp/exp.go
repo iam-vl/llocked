@@ -7,6 +7,7 @@ import (
 	"log"
 	"strings"
 
+	"github.com/iam-vl/llocked/models"
 	_ "github.com/jackc/pgx/v4/stdlib"
 )
 
@@ -31,7 +32,7 @@ func (cfg PostgresConfig) String() string {
 	)
 }
 
-func main2() {
+func main() {
 	cfg := PostgresConfig{
 		Host:     "localhost",
 		Port:     "5432",
@@ -41,80 +42,22 @@ func main2() {
 		SSLMode:  "disable",
 	}
 	db, err := sql.Open("pgx", cfg.String())
-	panicR(err)
+	if err != nil {
+		panic(err)
+	}
 	defer db.Close()
 	err = db.Ping()
-	panicR(err)
-	fmt.Printf("DB type: %+T\n", db)
-
-	fmt.Println("Ping ok")
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS users (
-		id SERIAL PRIMARY KEY,
-		name TEXT,
-		email TEXT NOT NULL
-	);
-	CREATE TABLE IF NOT EXISTS orders (
-		id SERIAL PRIMARY KEY,
-		user_id INT NOT NULL, 
-		amount INT,
-		description TEXT
-	);`)
-	PanicR(err)
-	fmt.Println("Tables created or alreary existing.")
-
-	// name := "',''); DROP TABLE users; --"
-	// email := "vl@faker.info"
-	// // query := fmt.Sprintf(`INSERT INTO users(name, email) VALUES ('%s', '%s');`, name, email)
-	// // _, err = db.Exec(query)
-	// _, err = db.Exec(`INSERT INTO users(name, email) VALUES ($1, $2);`, name, email)
-	// panicR(err)
-	// fmt.Println("User created")
-	// name := "Mark Twain"
-	// email := "mark@chammy.info"
-	// row := db.QueryRow(`INSERT INTO users (name, email) VALUES($1, $2) RETURNING id;`,
-	// 	name, email)
-	// var id int
-	// err = row.Scan(&id)
-	// panicR(err)
-	// fmt.Println("User created. ID:", id)
-	// id := 2
-	// row := db.QueryRow(`SELECT name, email FROM users WHERE id=$1;`, id)
-	// var name, email string
-	// err = row.Scan(&name, &email)
-	// if err == sql.ErrNoRows {
-	// 	fmt.Println("Error, no rows!")
-	// }
-	// panicR(err)
-	// fmt.Printf("User information: name=%s, email=%s\n", name, email)
-	// userId := id
-	// for i := 1; i <= 5; i++ {
-	// 	amt := i * 100
-	// 	desc := fmt.Sprintf("Fake order #%d", i)
-	// 	_, err := db.Exec(`INSERT INTO orders (user_id, amount, description) VALUES ($1, $2, $3)`, userId, amt, desc)
-	// 	panicR(err)
-	// }
-	// fmt.Println("Created fake orders. ")
-	var orders []Order
-	userId := 2
-	rows, err := db.Query(`SELECT id, amount, description FROM orders WHERE user_id=$1;`, userId)
-	fmt.Printf("Rows type: %T\n", rows)
-	PanicR(err)
-	defer rows.Close()
-	for rows.Next() {
-		var o Order
-		o.UserID = userId
-		err := rows.Scan(&o.ID, &o.Amount, &o.Description)
-		PanicR(err)
-		fmt.Printf("Order: %+v\n", o)
-		orders = append(orders, o)
-
+	if err != nil {
+		panic(err)
 	}
-	err = rows.Err()
-	PanicR(err)
-	fmt.Printf("Orders length: %d\n", len(orders))
-	fmt.Println("========")
-	// SetupTweetDB(db)
-
+	// fmt.Printf("DB type: %+T\n", db)
+	us := models.UserService{
+		DB: db,
+	}
+	user, _ := us.Create("rtut23@chammy.info", "123admin")
+	// panicR(err)
+	fmt.Println(user)
+	fmt.Println(&user)
 }
 func PanicR(err error) {
 	if err != nil {

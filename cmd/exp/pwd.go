@@ -7,7 +7,7 @@ import (
 	"fmt"
 )
 
-func main() {
+func mainPwd() {
 
 	secretKeyForHash := "secret-key"
 	pwd := "totally secret pwd nobody can guess"
