@@ -32,7 +32,7 @@ func (cfg PostgresConfig) String() string {
 	)
 }
 
-func main() {
+func main1203() {
 	cfg := PostgresConfig{
 		Host:     "localhost",
 		Port:     "5432",
@@ -115,6 +115,30 @@ func Demo(numbers ...int) {
 		fmt.Print(n, " ")
 	}
 	fmt.Println("\n====")
+}
+func main() {
+	main1204()
+}
+
+func main1204() {
+	cfg := models.DefaulPgrConfig()
+	db, err := models.Open(cfg)
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+	err = db.Ping()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Connected!")
+
+	us := models.UserService{DB: db}
+	user, err := us.Create("r2d2@starwars.com", "123r2d2")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(user)
 }
 func mainEmbedErrors() {
 	// sample line

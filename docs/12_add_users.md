@@ -113,7 +113,64 @@ Result:
 0xc00005a248
 ```
 
-## PostgresConfig for the models pkg
+## PostgresConfig for the models pkg 
+
+models/postgres.go: 
+```go
+import (
+	"database/sql"
+	"fmt"
+	_ "github.com/jackc/pgx/v4/stdlib"
+)
+type PgrConfig struct {
+	Host     string
+	// ...
+}
+func DefaulPgrConfig() PgrConfig {
+	return PgrConfig{
+		Host:     "localhost",
+		// ... 
+	}
+}
+func Open(cfg PgrConfig) (*sql.DB, error) {
+	// return nil, fmt.Errorf("open:%w", err) 
+	db, _ := sql.Open("pgx", cfg.String())
+	return db, nil
+}
+func (cfg PgrConfig) String() string {
+	return fmt.Sprintf(
+		"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
+		cfg.Host, cfg.Port, cfg.User, cfg.Password, cfg.Database, cfg.SSLMode,
+	)
+}
+```
+Exp/main: 
+```go
+func main1204() {
+	// panic(err) everywhere
+	cfg := models.DefaulPgrConfig()
+	db, _ := models.Open(cfg)
+	defer db.Close()
+	_ = db.Ping()
+	fmt.Println("Connected!")
+
+	us := models.UserService{DB: db}
+	user, _ := us.Create("r2d2@starwars.com", "123r2d2")
+	fmt.Println(user)
+}
+```
+
+func DefaulPgrConfig() PgrConfig {
+	return PgrConfig{
+		Host:     "localhost",
+		Port:     "5432",
+		User:     "vl",
+		Password: "123admin",
+		Database: "llocked",
+		SSLMode:  "disable",
+	}
+}
+```
 ## UserService + Users controller 
 ## Create users on signup
 ## Signin view
