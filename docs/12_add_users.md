@@ -215,6 +215,26 @@ func (u Users) Create(w http.ResponseWriter, r *http.Request) {
 }
 ```
 
-## Signin view
+## Signin view 
+
+```go
+type Users struct {
+	Templates struct {
+		New    TemplateExecuter
+		SignIn TemplateExecuter // new line 
+	}
+	UserService *models.UserService
+}
+func (u Users) SignIn(w http.ResponseWriter, r *http.Request) {
+	var data struct {
+		Email string
+	}
+	data.Email = r.FormValue("email")
+	u.Templates.SignIn.Execute(w, data)
+}
+```
+Add a template. 
+
+
 ## Auth users
 ## Process signin attempts 
