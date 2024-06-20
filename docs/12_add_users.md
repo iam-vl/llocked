@@ -198,7 +198,23 @@ func main() {
 	http.ListenAndServe(":1111", r)
 }
 ```
-## Create users on signup
+## Create users on signup 
+
+controllers/users.go: 
+```go 
+func (u Users) Create(w http.ResponseWriter, r *http.Request) {
+	email := r.FormValue("email")
+	pwd := r.FormValue("password")
+	user, err := u.UserService.Create(email, pwd)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, "something went wrong.", http.StatusInternalServerError)
+		return
+	}
+	fmt.Fprintf(w, "user created: %+v", user)
+}
+```
+
 ## Signin view
 ## Auth users
 ## Process signin attempts 

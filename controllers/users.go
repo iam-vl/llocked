@@ -45,15 +45,17 @@ func (u Users) New(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u Users) Create(w http.ResponseWriter, r *http.Request) {
-	// V2 - with FormValue() - no error processing
-	fmt.Fprintf(w, "<p>Email: %s</p>", r.FormValue("email"))
-	fmt.Fprintf(w, "<p>Password: %s</p>", r.FormValue("password"))
-	// err := r.ParseForm()
-	// if err != nil {
-	// 	http.Error(w, "unable to parse form submission", http.StatusBadRequest)
-	// 	return
-	// }
-	// fmt.Fprintf(w, "<p>Email: %s</p>", r.PostForm.Get("email"))
-	// fmt.Fprintf(w, "<p>Password: %s</p>", r.PostForm.Get("password"))
+	email := r.FormValue("email")
+	pwd := r.FormValue("password")
+	user, err := u.UserService.Create(email, pwd)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, "something went wrong.", http.StatusInternalServerError)
+		return
+	}
+	fmt.Fprintf(w, "user created: %+v", user)
 
+	// V2 - with FormValue() - no error processing
+	// fmt.Fprintf(w, "<p>Email: %s</p>", r.FormValue("email"))
+	// fmt.Fprintf(w, "<p>Password: %s</p>", r.FormValue("password"))
 }
