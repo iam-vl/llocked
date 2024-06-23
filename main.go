@@ -72,6 +72,7 @@ func main() {
 	r.Post("/signup", userC.Create)
 	userC.Templates.SignIn = PrepTemplateTailwind("signin.gohtml")
 	r.Get("/signin", userC.SignIn)
+	r.Post("/signin", userC.ProcessSignIn)
 
 	fmt.Println("Starting server on port :1111")
 	http.ListenAndServe(":1111", r)

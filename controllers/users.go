@@ -19,6 +19,22 @@ type Users struct {
 	// }
 }
 
+func (u Users) ProcessSignIn(w http.ResponseWriter, r *http.Request) {
+	var data struct {
+		Email    string
+		Password string
+	}
+	data.Email = r.FormValue("email")
+	data.Password = r.FormValue("password")
+	user, err := u.UserService.Authenticate(data.Email, data.Password)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, "Something went wrong processing signin.", http.StatusInternalServerError)
+		return
+	}
+	fmt.Fprintf(w, "User authenticated: %+v", user)
+}
+
 func (u Users) SignIn(w http.ResponseWriter, r *http.Request) {
 	var data struct {
 		Email string

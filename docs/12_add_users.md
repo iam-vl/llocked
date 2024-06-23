@@ -233,8 +233,35 @@ func (u Users) SignIn(w http.ResponseWriter, r *http.Request) {
 	u.Templates.SignIn.Execute(w, data)
 }
 ```
-Add a template. 
+Add a template, update the navbar. 
 
+Update the main:
+```go
+func main() {
+	r := chi.NewRouter()
+	r.Use(middleware.Logger)
+	ServeStaticsChi(r)
+	db := SetupDbConnection()
+	defer db.Close()
+
+	// Set up model services and controllers
+	userService := models.UserService{
+		DB: db,
+	}
+	userC := controllers.Users{
+		UserService: &userService,
+	}
+
+	userC.Templates.New = PrepTemplateTailwind("signup.gohtml")
+	r.Get("/signup", userC.New)
+	r.Post("/signup", userC.Create)
+	userC.Templates.SignIn = PrepTemplateTailwind("signin.gohtml")
+	r.Get("/signin", userC.SignIn)
+
+	fmt.Println("Starting server on port :1111")
+	http.ListenAndServe(":1111", r)
+}
+```
 
 ## Auth users
 
@@ -259,4 +286,27 @@ func (us *UserService) Authenticate(email, pwd string) (*User, error) {
 	return &user, nil
 }
 ```
-## Process signin attempts 
+## Process signin attempts
+
+Controllers/users.go
+```go
+func (u Users) ProcessSignIn(w http.ResponseWriter, r *http.Request) {
+	var data struct {
+		Email    string
+		Password string
+	}
+	data.Email = r.FormValue("email")
+	data.Password = r.FormValue("password")
+	user, err := u.UserService.Authenticate(data.Email, data.Password)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, "Something went wrong processing signin.", http.StatusInternalServerError)
+		return
+	}
+	fmt.Fprintf(w, "User authenticated: %+v", user)
+}
+```
+Main: 
+```go
+r.Post("/signin", userC.ProcessSignIn)
+```
