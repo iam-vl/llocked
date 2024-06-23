@@ -237,4 +237,26 @@ Add a template.
 
 
 ## Auth users
+
+Query: 
+```go
+const AuthUserQuery = `SELECT id, password_hash FROM users WHERE email=$1`
+```
+Start like this (types/user.go)
+```go
+func (us *UserService) Authenticate(email, pwd string) (*User, error) {
+	email = strings.ToLower(email)
+	user := User{ Email: email }
+	row := us.DB.QueryRow(AuthUserQuery, email)
+	err := row.Scan(&user.ID, &user.PasswordHash)
+	if err != nil {
+		return nil, fmt.Errorf("authenticate: %w", err)
+	}
+	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(pwd))
+	if err != nil {
+		return nil, fmt.Errorf("authenticate: %w", err)
+	}
+	return &user, nil
+}
+```
 ## Process signin attempts 

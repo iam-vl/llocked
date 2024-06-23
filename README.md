@@ -15,6 +15,11 @@ systemctl status|disable mysql
 systemctl status postgresql
 ```
 
+## Test creds 
+
+gozi@lla.org
+123admin
+
 
 ## Toolchain 
 
