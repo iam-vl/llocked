@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/iam-vl/llocked/models"
 )
@@ -32,6 +33,18 @@ func (u Users) ProcessSignIn(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Something went wrong processing signin.", http.StatusInternalServerError)
 		return
 	}
+	cookie := http.Cookie{
+		Name:    "email",
+		Value:   user.Email,
+		Path:    "/",
+		Expires: time.Now().Add(time.Minute * 30),
+	}
+	// when cookies are sent to server:
+	//  "/" - anywhere
+	// "/app" - anywhere like /app, /app/, /app/widget/1. Won't work on /application
+	fmt.Printf("Cookie: %+v\n", cookie)
+
+	http.SetCookie(w, &cookie)
 	fmt.Fprintf(w, "User authenticated: %+v", user)
 }
 

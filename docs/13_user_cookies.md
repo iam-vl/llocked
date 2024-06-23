@@ -28,7 +28,23 @@ Sec issues:
 
 ## Creating cookies 
 
+Plan: 
+1. Instantiate an `http.Cookie`.
+2. Call the `http.SetCookie(w http.ResponseWriter, c *http.Cookie)`.
+
+Usage: 
+```go
+cookie := http.Cookie{Name: "cookie key", Value: "cookie val"}
+http.SetCookie(w, &cookie)
+```
+Add to `controllers/user.go` just before `Fprintf()`:
+
+
+
 ## Viewing cookies w/ chrome 
+
+Seetings > Privacy & Security > rd Party Cookies > See all site data & permissions.
+EditThisCookie for Chrome. 
 
 ## Viewing cookies w/ go 
 
