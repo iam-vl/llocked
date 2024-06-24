@@ -6,6 +6,7 @@ Plan:
 * Viewing cookies w/ chrome
 * Viewing cookies w/ go
 * Securing cookies from XSS
+* Cookie theft
 * CSRF attacks
 * CSRF middleware 
 * Providing CSRF to templates via data
@@ -91,9 +92,37 @@ func (u Users) ProcessSignIn(w http.ResponseWriter, r *http.Request) {
 }
 ```
 
-## CSRF attacks 
+## Cookie theft
+
+Cookie theft via packet sniffing or via physical access to the device.  
+SSL/TLS, Let's encrypt. 
+Can deploy w/ Caddy Server. 
+Useful: invalidate old sessions, session length limits..... 
+
+
+## CSRF attacks  
+
+Options:
+* Link CSRF. Actyions must be for POST, PUT, DELETE. Image tags w/ links.
+
+Example for POST:
+```html
+<form action="https://bank.com/transfer" method="POST">
+  <input type="hidden" name="recipient" value="attacker@evil.com"> 
+  <input type="hidden" name="amount" value=500> 
+  <button type="submit">Dispute</button>
+</form>
+```
+Solution: CSRF token
+Example:
+```html
+<input type="hidden" name="csrf" value="random-string"> 
+```
+Solution for JS fronends: Include the CSRF in a header 
+
 
 ## CSRF middleware  
+
 
 ## Providing CSRF to templates via data 
 
