@@ -48,7 +48,48 @@ EditThisCookie for Chrome.
 
 ## Viewing cookies w/ go 
 
+User controller: 
+```go
+func (u Users) CurrentUser(w http.ResponseWriter, r *http.Request) {
+	email, err := r.Cookie("email")
+	if err != nil {
+		fmt.Fprint(w, "The email cookie couldn't be read.")
+		return
+	}
+	fmt.Fprintf(w, "Email cookie: %s\n", email.Value)
+	fmt.Fprintf(w, "Headers: %+v\n", r.Header)
+}
+```
+Main:
+```go
+r.Get("/users/me", r.Header)
+```
+
 ## Securing cookies from XSS 
+
+Disable JS access to cookies by setting `HttpOnly=true`. 
+User controller: 
+```go 
+func (u Users) ProcessSignIn(w http.ResponseWriter, r *http.Request) {
+	var data struct {
+		Email    string
+		Password string
+	}
+	data.Email = r.FormValue("email")
+	data.Password = r.FormValue("password")
+	user, _ := u.UserService.Authenticate(data.Email, data.Password)
+	cookie := http.Cookie{
+		Name:     "email",
+		Value:    user.Email,
+		Path:     "/",
+        // Here
+		HttpOnly: true, 
+		Expires:  time.Now().Add(time.Minute * 30),
+	}
+	http.SetCookie(w, &cookie)
+	fmt.Fprintf(w, "User authenticated: %+v", user)
+}
+```
 
 ## CSRF attacks 
 

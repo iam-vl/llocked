@@ -20,6 +20,16 @@ type Users struct {
 	// }
 }
 
+func (u Users) CurrentUser(w http.ResponseWriter, r *http.Request) {
+	email, err := r.Cookie("email")
+	if err != nil {
+		fmt.Fprint(w, "The email cookie couldn't be read.")
+		return
+	}
+	fmt.Fprintf(w, "Email cookie: %s\n", email.Value)
+	fmt.Fprintf(w, "Headers: %+v\n", r.Header)
+}
+
 func (u Users) ProcessSignIn(w http.ResponseWriter, r *http.Request) {
 	var data struct {
 		Email    string
@@ -34,10 +44,11 @@ func (u Users) ProcessSignIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	cookie := http.Cookie{
-		Name:    "email",
-		Value:   user.Email,
-		Path:    "/",
-		Expires: time.Now().Add(time.Minute * 30),
+		Name:     "email",
+		Value:    user.Email,
+		Path:     "/",
+		HttpOnly: true,
+		Expires:  time.Now().Add(time.Minute * 30),
 	}
 	// when cookies are sent to server:
 	//  "/" - anywhere
