@@ -123,6 +123,10 @@ Solution for JS fronends: Include the CSRF in a header
 
 ## CSRF middleware  
 
+```
+go get github.com/gorilla/csrf
+```
+
 
 ## Providing CSRF to templates via data 
 

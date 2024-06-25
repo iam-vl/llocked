@@ -33,6 +33,7 @@ starting the server on :3000...
 go get -u guthub.com/go-chi/chi/v5
 go get github.com/jackc/pgx/v4
 go get golang.org/x/crypto/bcrypt
+go get github.com/gorilla/csrf
 ```
 
 ## Plan 
