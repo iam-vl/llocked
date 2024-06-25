@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -68,7 +69,7 @@ func main() {
 	}
 
 	userC.Templates.New = PrepTemplateTailwind("signup.gohtml")
-	r.Get("/signup", userC.New)
+	r.Get("/signup", TimerMiddleware(userC.New))
 	r.Post("/signup", userC.Create)
 	userC.Templates.SignIn = PrepTemplateTailwind("signin.gohtml")
 	r.Get("/signin", userC.SignIn)
@@ -77,6 +78,13 @@ func main() {
 
 	fmt.Println("Starting server on port :1111")
 	http.ListenAndServe(":1111", r)
+}
+func TimerMiddleware(h http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+		h(w, r)
+		fmt.Println("Request time:", time.Since(start))
+	}
 }
 
 func PrepTemplateTailwind(tplName string) views.Template {

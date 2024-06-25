@@ -126,6 +126,65 @@ Solution for JS fronends: Include the CSRF in a header
 ```
 go get github.com/gorilla/csrf
 ```
+Functions: 
+* `csrf.Protect()` // set csrf token for each user + validate CSRF token when necessary 
+* `csrf.Token()`   // accepts a Request and returns the assiociated CSRF token 
+* `csrf.TemplateField()`  // accepts a Request and returns an <input ...> tag with that bv
+
+**Middleware** - a func that accepts an http handler func and returns another http Handler with some functionality wrapped around in. Say we want to add a time to our handler:
+```go
+func TimerMiddleware(h http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+		h(w, r)
+		fmt.Println("Request time:", time.Since(start))
+	}
+}
+```
+Usage:  
+```go
+r.Get("/signup", TimerMiddleware(userC.New))
+```
+
+Example V1: 
+```go
+func Wrap(input string) string {
+	return "prefix-" + input + "-suffix"
+}
+func main() {
+	output := Wrap("hello")
+	fmt.Println(output)
+}
+```
+Example V2:
+```go
+func Hello() string {
+	return "hello"
+}
+func Wrap2(stringer func() string) string {
+	return "prefix-" + stringer() + "-suffix"
+}
+func main() {
+	output := Wrap2(Hello)
+	fmt.Println(output)
+}
+```
+Example V3: 
+```go
+func Hello() string {
+	return "hello"
+}
+func Wrap3(stringer func() string) func() string {
+	return func() string {
+		return "prefix-" + stringer() + "-suffix"
+	}
+}
+func main() {
+	output3 := Wrap3(Hello)
+	fmt.Println(output3)
+	fmt.Println(output3())
+}
+```
 
 
 ## Providing CSRF to templates via data 
